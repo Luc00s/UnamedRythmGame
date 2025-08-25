@@ -4,7 +4,7 @@
 cam = camera_create();
 camera_set_view_size(cam, global.data.screen.width, global.data.screen.height);
 view_set_camera(0, cam);
-
+window_set_fullscreen(1)
 //Setando o target da câmera
 target = objPlayer;
 

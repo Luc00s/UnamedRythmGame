@@ -39,6 +39,7 @@
   ],
   "ResourceOrderSettings":[
     {"name":"o_Shake","order":1,"path":"objects/o_Shake/o_Shake.yy",},
+    {"name":"objBattleControl","order":3,"path":"objects/objBattleControl/objBattleControl.yy",},
     {"name":"objCamera","order":1,"path":"objects/objCamera/objCamera.yy",},
     {"name":"ObjCharterEditor","order":2,"path":"objects/ObjCharterEditor/ObjCharterEditor.yy",},
     {"name":"ObjFlash","order":3,"path":"objects/ObjFlash/ObjFlash.yy",},
