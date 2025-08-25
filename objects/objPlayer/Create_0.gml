@@ -37,3 +37,20 @@ footstepSound = false;
 
 //Consertando o depth
 depth = -bbox_bottom;
+
+//Initialize arrays to store the history of player's position and sprite details
+positionX = [];
+positionY = [];
+recordSprite = [];
+recordImageXScale = [];
+
+//Define how many steps of history to record
+var record_length = 90;
+
+//Pre-fill the arrays with the player's starting state
+for (var i = 0; i < record_length; i++) {
+    positionX[i] = x;
+    positionY[i] = y;
+    recordSprite[i] = sprite_index;
+    recordImageXScale[i] = image_xscale;
+}

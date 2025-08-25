@@ -70,3 +70,20 @@ sprite_index = asset_get_index(_sprite);
 
 //Colisão
 collision();
+
+//Record player's movement history
+var record_length = array_length(positionX);
+
+//Shift all existing records down by one spot
+for (var i = record_length - 1; i > 0; i--) {
+    positionX[i] = positionX[i - 1];
+    positionY[i] = positionY[i - 1];
+    recordSprite[i] = recordSprite[i - 1];
+    recordImageXScale[i] = recordImageXScale[i - 1];
+}
+
+//Add the player's current position and sprite to the beginning of the array
+positionX[0] = x;
+positionY[0] = y;
+recordSprite[0] = sprite_index;
+recordImageXScale[0] = image_xscale;
