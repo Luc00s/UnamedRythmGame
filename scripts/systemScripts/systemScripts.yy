@@ -1,0 +1,13 @@
+{
+  "$GMScript":"v1",
+  "%Name":"systemScripts",
+  "isCompatibility":false,
+  "isDnD":false,
+  "name":"systemScripts",
+  "parent":{
+    "name":"Other",
+    "path":"folders/Scripts/Sistema/Other.yy",
+  },
+  "resourceType":"GMScript",
+  "resourceVersion":"2.0",
+}
