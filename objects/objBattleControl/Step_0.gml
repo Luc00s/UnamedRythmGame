@@ -115,3 +115,8 @@ bottomBarY = lerp(bottomBarY, bottomBarTargetY, bottomLerpAmount);
 
 barScrollX -= barScrollSpeed;
 if(barScrollX <= -32) barScrollX += 32;
+
+textureScrollX -= textureScrollSpeedX;
+textureScrollY += textureScrollSpeedY;
+if(textureScrollX <= -16) textureScrollX += 16;
+if(textureScrollY >= 16) textureScrollY -= 16;
