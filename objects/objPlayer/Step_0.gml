@@ -71,19 +71,25 @@ sprite_index = asset_get_index(_sprite);
 //Colisão
 collision();
 
-//Record player's movement history
-var record_length = array_length(positionX);
+//Enhanced movement recording with distance-based and time-based triggers
+movementDistance += point_distance(lastRecordedX, lastRecordedY, x, y);
+var timeSinceLastRecord = (historyIndex == 0) ? 999 : 1;
+var shouldRecord = (movementDistance >= minRecordDistance) || (timeSinceLastRecord >= 3);
 
-//Shift all existing records down by one spot
-for (var i = record_length - 1; i > 0; i--) {
-    positionX[i] = positionX[i - 1];
-    positionY[i] = positionY[i - 1];
-    recordSprite[i] = recordSprite[i - 1];
-    recordImageXScale[i] = recordImageXScale[i - 1];
+if (shouldRecord) {
+    //Circular buffer - more efficient than array shifting
+    historyIndex = (historyIndex + 1) % historyBufferSize;
+    
+    //Record current state
+    positionX[historyIndex] = x;
+    positionY[historyIndex] = y;
+    recordSprite[historyIndex] = sprite_index;
+    recordImageXScale[historyIndex] = image_xscale;
+    recordSpeed[historyIndex] = point_distance(0, 0, hsp, vsp);
+    recordDirection[historyIndex] = spriteDir;
+    
+    //Reset tracking
+    movementDistance = 0;
+    lastRecordedX = x;
+    lastRecordedY = y;
 }
-
-//Add the player's current position and sprite to the beginning of the array
-positionX[0] = x;
-positionY[0] = y;
-recordSprite[0] = sprite_index;
-recordImageXScale[0] = image_xscale;

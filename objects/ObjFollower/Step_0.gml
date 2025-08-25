@@ -1,20 +1,68 @@
-//Check if the player object exists to avoid errors
+//Smooth follower logic with proper animation
 if (instance_exists(objPlayer)) {
-    //Set the follower's position to the player's recorded position
-    //at the index specified by its 'record' variable
-    x = objPlayer.positionX[record];
-    y = objPlayer.positionY[record];
+    //Get target position from circular buffer
+    var bufferIndex = (objPlayer.historyIndex - record + objPlayer.historyBufferSize) % objPlayer.historyBufferSize;
+    bufferIndex = max(0, min(bufferIndex, objPlayer.historyBufferSize - 1));
     
-    //Update the follower's sprite to match the player's sprite at that point in time
-    sprite_index = objPlayer.recordSprite[record];
+    //Get recorded data from player history
+    var targetX = objPlayer.positionX[bufferIndex];
+    var targetY = objPlayer.positionY[bufferIndex];
+    var recordedSprite = objPlayer.recordSprite[bufferIndex];
+    var recordedXScale = objPlayer.recordImageXScale[bufferIndex];
     
-    //Update the follower's horizontal direction (facing left or right)
-    image_xscale = objPlayer.recordImageXScale[record];
+    //Smooth movement instead of direct teleportation
+    var distanceToTarget = point_distance(x, y, targetX, targetY);
     
-    //Sync the animation speed with the player's speed
-    //This makes the follower stop animating when the player stops
-    image_speed = objPlayer.image_speed;
+    if (distanceToTarget > 1) {
+        //Move smoothly toward target
+        var moveSpeed = min(distanceToTarget * 0.3, 3);
+        var moveDir = point_direction(x, y, targetX, targetY);
+        x += lengthdir_x(moveSpeed, moveDir);
+        y += lengthdir_y(moveSpeed, moveDir);
+    } else {
+        //Close enough to target
+        x = targetX;
+        y = targetY;
+    }
     
-    //Update depth
-    depth = -bbox_bottom;
+    //Check if follower is actually moving
+    var movementDistance = point_distance(lastX, lastY, x, y);
+    var isMoving = movementDistance > 0.1;
+    
+    if (isMoving) {
+        //Always use the recorded sprite when moving (Walk/Run)
+        sprite_index = recordedSprite;
+        
+        //Set proper animation speed based on movement
+        image_speed = clamp(movementDistance, 0.8, 2.5);
+    } else {
+        //Convert to idle sprite when not moving
+        var spriteName = sprite_get_name(recordedSprite);
+        var idleSprite = string_replace(spriteName, "Walk", "");
+        idleSprite = string_replace(idleSprite, "Run", "");
+        sprite_index = asset_get_index(idleSprite);
+        
+        //Stop animation and handle blinking
+        image_speed = 0;
+        
+        //Blinking animation for idle state
+        blinkTimer = approach(blinkTimer, 0, 1);
+        if (blinkTimer == 0) {
+            blinkTimer = irandom_range(defaultBlinkTimer[0], defaultBlinkTimer[1]);
+        } else if (blinkTimer <= 8) {
+            image_index = 1;
+        } else {
+            image_index = 0;
+        }
+    }
+    
+    //Match player's facing direction
+    image_xscale = recordedXScale;
+    
+    //Update last position for next frame comparison
+    lastX = x;
+    lastY = y;
+    
+    //Depth sorting based on chain position
+    depth = -bbox_bottom - followerChainPosition;
 }

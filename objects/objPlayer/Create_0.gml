@@ -38,19 +38,18 @@ footstepSound = false;
 //Consertando o depth
 depth = -bbox_bottom;
 
-//Initialize arrays to store the history of player's position and sprite details
-positionX = [];
-positionY = [];
-recordSprite = [];
-recordImageXScale = [];
+//Enhanced position history system using circular buffer
+historyBufferSize = 150;
+historyIndex = 0;
+positionX = array_create(historyBufferSize, x);
+positionY = array_create(historyBufferSize, y);
+recordSprite = array_create(historyBufferSize, sprite_index);
+recordImageXScale = array_create(historyBufferSize, image_xscale);
+recordSpeed = array_create(historyBufferSize, 0);
+recordDirection = array_create(historyBufferSize, 270);
 
-//Define how many steps of history to record
-var record_length = 90;
-
-//Pre-fill the arrays with the player's starting state
-for (var i = 0; i < record_length; i++) {
-    positionX[i] = x;
-    positionY[i] = y;
-    recordSprite[i] = sprite_index;
-    recordImageXScale[i] = image_xscale;
-}
+//Movement tracking for better follower logic
+movementDistance = 0;
+lastRecordedX = x;
+lastRecordedY = y;
+minRecordDistance = 2;

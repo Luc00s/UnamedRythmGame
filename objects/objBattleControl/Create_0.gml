@@ -1,6 +1,21 @@
 battleBoxes = [];
 battleBoxActive = false;
 battleBoxCount = 1;
+
+//Function to count active party members (player + followers)
+function getPartyMemberCount() {
+    var count = 0;
+    
+    //Count player
+    if (instance_exists(objPlayer)) {
+        count++;
+    }
+    
+    //Count followers
+    count += instance_number(ObjFollower);
+    
+    return max(1, count); //At least 1 box
+}
 animationTimer = 0;
 movingUp = true;
 
@@ -12,7 +27,8 @@ barAnimSpeed = 6;
 barAnimTimer = 0;
 topBarLerpSpeed = 0.25;
 bottomBarLerpSpeed = 0.22;
-barScrollX = 0.0;
+topBarScrollX = 0.0;
+bottomBarScrollX = 0.0;
 barScrollSpeed = 0.2;
 textureScrollX = 0.0;
 textureScrollY = 0.0;

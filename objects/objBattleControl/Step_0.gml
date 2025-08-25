@@ -1,3 +1,7 @@
+//Auto-update battle box count based on party members
+battleBoxCount = getPartyMemberCount();
+
+//Manual override keys for testing (optional)
 if(keyboard_check_pressed(ord("1"))) {
     battleBoxCount = 1;
     battleBoxes = [];
@@ -48,8 +52,8 @@ if(keyboard_check_pressed(vk_space)) {
                 velocity: 0,
                 animationDelay: i * 5,
                 hasStarted: false,
-                springStrength: 0.3,
-                damping: 0.7
+                springStrength: 0.15,
+                damping: 0.85
             };
             
             array_push(battleBoxes, battleBox);
@@ -113,10 +117,15 @@ bottomLerpAmount = clamp(bottomLerpAmount, 0.12, 0.35);
 topBarY = lerp(topBarY, topBarTargetY, topLerpAmount);
 bottomBarY = lerp(bottomBarY, bottomBarTargetY, bottomLerpAmount);
 
-barScrollX -= barScrollSpeed;
-if(barScrollX <= -32) barScrollX += 32;
+//Top bar scrolls right (+)
+topBarScrollX += barScrollSpeed;
+if(topBarScrollX >= 32) topBarScrollX -= 32;
 
-textureScrollX -= textureScrollSpeedX;
-textureScrollY += textureScrollSpeedY;
-if(textureScrollX <= -16) textureScrollX += 16;
-if(textureScrollY >= 16) textureScrollY -= 16;
+//Bottom bar scrolls left (-)
+bottomBarScrollX -= barScrollSpeed;
+if(bottomBarScrollX <= -32) bottomBarScrollX += 32;
+
+textureScrollX += textureScrollSpeedX;
+textureScrollY -= textureScrollSpeedY;
+if(textureScrollX >= 16) textureScrollX -= 16;
+if(textureScrollY <= -16) textureScrollY += 16;
