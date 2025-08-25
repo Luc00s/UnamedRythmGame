@@ -14,6 +14,7 @@
     {"name":"inst_487FEA40","path":"rooms/RoomGame/RoomGame.yy",},
     {"name":"inst_142AF63F","path":"rooms/RoomGame/RoomGame.yy",},
     {"name":"inst_BattleControl","path":"rooms/RoomGame/RoomGame.yy",},
+    {"name":"inst_5D9BBF60","path":"rooms/RoomGame/RoomGame.yy",},
   ],
   "isDnd":false,
   "layers":[
@@ -21,6 +22,7 @@
         {"$GMRInstance":"v2","%Name":"inst_4A5DA250","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_4A5DA250","objectId":{"name":"objDualGridGround","path":"objects/objDualGridGround/objDualGridGround.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":16.0,"y":-96.0,},
         {"$GMRInstance":"v2","%Name":"inst_D021AD3","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_D021AD3","objectId":{"name":"objCamera","path":"objects/objCamera/objCamera.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":0.0,"y":-96.0,},
         {"$GMRInstance":"v2","%Name":"inst_BattleControl","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_BattleControl","objectId":{"name":"objBattleControl","path":"objects/objBattleControl/objBattleControl.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":32.0,"y":-96.0,},
+        {"$GMRInstance":"v2","%Name":"inst_5D9BBF60","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_5D9BBF60","objectId":{"name":"ObjFollower","path":"objects/ObjFollower/ObjFollower.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":1.0,"scaleY":1.0,"x":32.0,"y":80.0,},
       ],"layers":[],"name":"Control","properties":[],"resourceType":"GMRInstanceLayer","resourceVersion":"2.0","userdefinedDepth":false,"visible":true,},
     {"$GMRInstanceLayer":"","%Name":"Solid","depth":100,"effectEnabled":true,"effectType":null,"gridX":16,"gridY":16,"hierarchyFrozen":false,"inheritLayerDepth":false,"inheritLayerSettings":false,"inheritSubLayers":true,"inheritVisibility":true,"instances":[
         {"$GMRInstance":"v2","%Name":"inst_4F553EAB","colour":4294967295,"frozen":false,"hasCreationCode":false,"ignore":false,"imageIndex":0,"imageSpeed":1.0,"inheritCode":false,"inheritedItemId":null,"inheritItemSettings":false,"isDnd":false,"name":"inst_4F553EAB","objectId":{"name":"objWall","path":"objects/objWall/objWall.yy",},"properties":[],"resourceType":"GMRInstance","resourceVersion":"2.0","rotation":0.0,"scaleX":21.0,"scaleY":1.0,"x":0.0,"y":-16.0,},
