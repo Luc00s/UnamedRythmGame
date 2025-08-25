@@ -70,6 +70,7 @@
     {"id":{"name":"objControl","path":"objects/objControl/objControl.yy",},},
     {"id":{"name":"objDualGridGround","path":"objects/objDualGridGround/objDualGridGround.yy",},},
     {"id":{"name":"ObjFlash","path":"objects/ObjFlash/ObjFlash.yy",},},
+    {"id":{"name":"ObjFollower","path":"objects/ObjFollower/ObjFollower.yy",},},
     {"id":{"name":"objPlayer","path":"objects/objPlayer/objPlayer.yy",},},
     {"id":{"name":"ObjTree","path":"objects/ObjTree/ObjTree.yy",},},
     {"id":{"name":"objWall","path":"objects/objWall/objWall.yy",},},

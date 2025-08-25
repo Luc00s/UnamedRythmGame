@@ -43,6 +43,7 @@
     {"name":"objCamera","order":1,"path":"objects/objCamera/objCamera.yy",},
     {"name":"ObjCharterEditor","order":2,"path":"objects/ObjCharterEditor/ObjCharterEditor.yy",},
     {"name":"ObjFlash","order":3,"path":"objects/ObjFlash/ObjFlash.yy",},
+    {"name":"ObjFollower","order":5,"path":"objects/ObjFollower/ObjFollower.yy",},
     {"name":"objWall","order":1,"path":"objects/objWall/objWall.yy",},
     {"name":"objWater","order":1,"path":"objects/objWater/objWater.yy",},
     {"name":"parReflection","order":1,"path":"objects/parReflection/parReflection.yy",},
