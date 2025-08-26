@@ -55,5 +55,49 @@ if(battleBoxActive) {
         
         // Right score sprite (index 1) 
         draw_sprite(sprBattleElement, 1, rightScoreSprite, scoreY-1);
+        
+        // Draw HP and Mana for each player
+        var playerNames = ["violet", "red", "robot", "gang"];
+        if (i < array_length(playerNames)) {
+            var playerName = playerNames[i];
+            if (variable_struct_exists(playerStats, playerName)) {
+                var player = playerStats[$ playerName];
+                
+                // Set text properties
+                draw_set_font(fn1);
+                draw_set_halign(fa_left);
+                draw_set_valign(fa_top);
+                
+                // HP text (left side) - format as 3 digits with small spacing
+                draw_set_color(c_black);
+                var healthStr = string_format(player.health, 3, 0);
+                var healthFormatted = string_char_at(healthStr, 1) + string_char_at(healthStr, 2) + string_char_at(healthStr, 3);
+                draw_text(leftScoreX + 1, scoreY, healthFormatted);
+                
+                // Mana text (right side) - format as 3 digits with small spacing
+                draw_set_color(c_black);
+                var manaStr = string_format(player.mana, 3, 0);
+                var manaFormatted = string_char_at(manaStr, 1) + string_char_at(manaStr, 2) + string_char_at(manaStr, 3);
+                draw_text(rightScoreX - 1, scoreY, manaFormatted);
+                
+                // Status effects (if any)
+                if (array_length(player.status) > 0) {
+                    var statusText = "";
+                    for (var s = 0; s < array_length(player.status); s++) {
+                        statusText += player.status[s];
+                        if (s < array_length(player.status) - 1) statusText += ",";
+                    }
+                    draw_set_color(c_yellow);
+                    draw_text(box.x + 5, boxDrawY + 30, statusText);
+                }
+                
+                // Reset text properties
+                draw_set_color(c_white);
+                draw_set_halign(fa_left);
+                draw_set_valign(fa_top);
+            }
+        }
     }
 }
+
+draw_text(32,32,string(mouse_x) + " " + string(mouse_y))

@@ -61,7 +61,7 @@
   },
   "name":"UnamedRythmGame",
   "resources":[
-    {"id":{"name":"Fn1","path":"fonts/Fn1/Fn1.yy",},},
+    {"id":{"name":"fn1","path":"fonts/fn1/fn1.yy",},},
     {"id":{"name":"o_HitParticle","path":"objects/o_HitParticle/o_HitParticle.yy",},},
     {"id":{"name":"o_Shake","path":"objects/o_Shake/o_Shake.yy",},},
     {"id":{"name":"objBattleControl","path":"objects/objBattleControl/objBattleControl.yy",},},

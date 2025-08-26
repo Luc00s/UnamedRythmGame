@@ -3,7 +3,7 @@
 
 
 
-draw_set_font(Fn1);
+draw_set_font(fn1);
 
 
 switch (editor_mode) {
@@ -453,7 +453,7 @@ if (note_placement_type == ENotePlacementType.RESET) _note_type_str = "RESET";
 
             draw_set_halign(fa_right);
             draw_set_valign(fa_top);
-            draw_set_font(Fn1);
+            draw_set_font(fn1);
 
             for (var i = 0; i < array_length(song_list); i++) {
                 var _song = song_list[i];
@@ -700,7 +700,7 @@ if (note_placement_type == ENotePlacementType.RESET) _note_type_str = "RESET";
             
             draw_set_halign(fa_center);
             draw_set_valign(fa_middle);
-            draw_set_font(Fn1);
+            draw_set_font(fn1);
 
             for (var i = 0; i < array_length(_list.items); i++) {
                 var _item_y = (i * _list.item_height) - _list.scroll_y;
