@@ -9,19 +9,20 @@ for(var i = -1; i <= ceil(screenWidth / 32); i++) {
 if(battleBoxActive) {
     for(var i = 0; i < array_length(battleBoxes); i++) {
         var box = battleBoxes[i];
+        var boxDrawY = box.y + box.impactOffset;
         
         for(var tileX = -1; tileX < 5; tileX++) {
             for(var tileY = -1; tileY < 3; tileY++) {
                 var drawX = box.x + 4 + (tileX * 16) + textureScrollX;
-                var drawY = box.y + 4 + (tileY * 16) + textureScrollY;
+                var drawY = boxDrawY + 4 + (tileY * 16) + textureScrollY;
                 
-                if(drawX + 16 > box.x + 4 && drawY + 16 > box.y + 4 && 
-                   drawX < box.x + 64 && drawY < box.y + 28) {
+                if(drawX + 16 > box.x + 4 && drawY + 16 > boxDrawY + 4 && 
+                   drawX < box.x + 64 && drawY < boxDrawY + 28) {
                     
                     var clipLeft = max(0, (box.x + 4) - drawX);
-                    var clipTop = max(0, (box.y + 4) - drawY);
+                    var clipTop = max(0, (boxDrawY + 4) - drawY);
                     var clipRight = max(0, (drawX + 16) - (box.x + 64));
-                    var clipBottom = max(0, (drawY + 16) - (box.y + 28));
+                    var clipBottom = max(0, (drawY + 16) - (boxDrawY + 28));
                     
                     var clipWidth = 16 - clipLeft - clipRight;
                     var clipHeight = 16 - clipTop - clipBottom;
@@ -34,6 +35,6 @@ if(battleBoxActive) {
             }
         }
         
-        draw_sprite(sprBattleBox, 0, box.x, box.y);
+        draw_sprite(sprBattleBox, 0, box.x, boxDrawY);
     }
 }
