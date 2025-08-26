@@ -1,2 +1,2 @@
-//Consertando o depth
+// Profundidade de renderização
 depth = -bbox_bottom;

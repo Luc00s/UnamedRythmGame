@@ -2,9 +2,9 @@ battleBoxes = [];
 battleBoxActive = false;
 battleBoxCount = 1;
 battleExitTimer = 0;
-battleExitTimeout = 300; // 5 seconds timeout
+battleExitTimeout = 300;
 
-// Player stat system
+// Sistema de estatísticas dos personagens
 playerStats = {
     violet: {
         name: "Violet",
@@ -12,7 +12,7 @@ playerStats = {
         maxHealth: 100,
         mana: 50,
         maxMana: 50,
-        status: []  // Array to hold status effects like "poison", "sleep", etc.
+        status: []
     },
     red: {
         name: "Red",
@@ -40,19 +40,17 @@ playerStats = {
     }
 };
 
-//Function to count active party members (player + followers)
+// Conta membros ativos do grupo
 function getPartyMemberCount() {
     var count = 0;
     
-    //Count player
     if (instance_exists(objPlayer)) {
         count++;
     }
     
-    //Count followers
     count += instance_number(ObjFollower);
     
-    return max(1, count); //At least 1 box
+    return max(1, count);
 }
 animationTimer = 0;
 movingUp = true;
@@ -73,7 +71,7 @@ textureScrollY = 0.0;
 textureScrollSpeedX = 0.15;
 textureScrollSpeedY = 0.12;
 
-// Helper functions for stat management
+// Funções auxiliares para gerenciamento de estatísticas
 function damagePlayer(playerName, damage) {
     if (variable_struct_exists(playerStats, playerName)) {
         playerStats[$ playerName].health = max(0, playerStats[$ playerName].health - damage);

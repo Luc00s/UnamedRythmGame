@@ -1,7 +1,6 @@
-//Auto-update battle box count based on party members
+// Atualização automática das caixas de batalha
 battleBoxCount = getPartyMemberCount();
 
-//Manual override keys for testing (optional)
 if(keyboard_check_pressed(ord("1"))) {
     battleBoxCount = 1;
     battleBoxes = [];
@@ -62,46 +61,42 @@ if(keyboard_check_pressed(vk_space)) {
             array_push(battleBoxes, battleBox);
         }
         
-        //Create ordered character list: player first, then followers by creation order
+        // Lista ordenada: jogador primeiro, depois seguidores
         var characterList = [];
         var boxIndex = 0;
         
-        //Add player first
         if (instance_exists(objPlayer)) {
             array_push(characterList, {inst: instance_find(objPlayer, 0), type: "player"});
         }
         
-        //Add followers in creation order (instance_find already returns in creation order)
         var followerCount = instance_number(ObjFollower);
         for (var i = 0; i < followerCount; i++) {
             var followerInst = instance_find(ObjFollower, i);
             array_push(characterList, {inst: followerInst, type: "follower"});
         }
         
-        //Assign each character to their battle box in order with delayed starts
+        // Atribui personagens às caixas de batalha
         for (var i = 0; i < min(array_length(characterList), array_length(battleBoxes)); i++) {
             var character = characterList[i];
             with (character.inst) {
-                // Ensure clean state for battle entry
                 jumpState = "waiting";
-                jumpOriginalX = x; // Store current position
+                jumpOriginalX = x;
                 jumpOriginalY = y;
-                jumpOriginalSprite = sprite_index; // Store current sprite
+                jumpOriginalSprite = sprite_index;
                 jumpStartX = x;
                 jumpStartY = y;
-                jumpTargetX = other.battleBoxes[i].x + 34; // Center of battle box
-                jumpTargetY = other.battleBoxes[i].targetY + 24; // Lower behind battle box
+                jumpTargetX = other.battleBoxes[i].x + 34;
+                jumpTargetY = other.battleBoxes[i].targetY + 24;
                 jumpProgress = 0;
-                jumpDelay = i * 8; // Same delay as battle boxes
+                jumpDelay = i * 8;
                 jumpDelayTimer = 0;
-                jumpPrepTimer = 0; // Timer for ground preparation phase
-                jumpPrepDuration = 30; // 0.5 seconds at 60 fps
-                jumpIsExiting = false; // This is an entry jump
+                jumpPrepTimer = 0;
+                jumpPrepDuration = 30;
+                jumpIsExiting = false;
                 
-                //Calculate jump duration and height - slower and lower
                 var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
-                jumpDuration = max(60, min(100, jumpDistance * 0.35)); // Much slower timing
-                jumpMaxHeight = max(80, jumpDistance * 0.5); // Lower height
+                jumpDuration = max(60, min(100, jumpDistance * 0.35));
+                jumpMaxHeight = max(80, jumpDistance * 0.5);
                 
                 battleBoxIndex = i;
                 
@@ -111,8 +106,6 @@ if(keyboard_check_pressed(vk_space)) {
         movingUp = !movingUp;
         animationTimer = 0;
         
-        // Don't reset characters immediately - let them complete their exit jumps
-        // The normal exit detection will handle cleanup when jumps are complete
         
         for(var i = 0; i < array_length(battleBoxes); i++) {
             var box = battleBoxes[i];
@@ -120,18 +113,15 @@ if(keyboard_check_pressed(vk_space)) {
             box.hasStarted = false;
             
             if(movingUp) {
-                // Entering battle - boxes animate in order (0, 1, 2, 3...)
                 box.animationDelay = i * 8;
                 box.targetY = room_height - 58;
                 topBarTargetY = 0;
                 bottomBarTargetY = room_height + 48;
             } else {
-                // Exiting battle - boxes animate in reverse order (3, 2, 1, 0...)
                 box.animationDelay = (array_length(battleBoxes) - 1 - i) * 8;
                 box.targetY = room_height + 50;
                 topBarTargetY = -35;
                 bottomBarTargetY = room_height + 96;
-                // Reset box impact state for next battle
                 box.hasBeenHit = false;
                 box.impactOffset = 0;
                 box.impactVelocity = 0;
@@ -146,7 +136,7 @@ if(keyboard_check_pressed(vk_space)) {
 if(battleBoxActive) {
     animationTimer++;
     
-    // Check for character landings and trigger impact effects
+    // Verifica aterrissagens e efeitos de impacto
     var characterList = [];
     if (instance_exists(objPlayer)) {
         array_push(characterList, {inst: instance_find(objPlayer, 0), type: "player"});
@@ -163,7 +153,6 @@ if(battleBoxActive) {
         if(animationTimer >= box.animationDelay) {
             box.hasStarted = true;
             
-            // Make character jump when their box starts exiting
             if (!movingUp && i < array_length(characterList)) {
                 var character = characterList[i];
                 with (character.inst) {
@@ -174,7 +163,7 @@ if(battleBoxActive) {
                         jumpTargetX = jumpOriginalX;
                         jumpTargetY = jumpOriginalY;
                         jumpProgress = 0;
-                        jumpIsExiting = true; // Mark this as an exit jump
+                        jumpIsExiting = true;
                         
                         var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
                         jumpDuration = max(60, min(100, jumpDistance * 0.35));
@@ -191,7 +180,6 @@ if(battleBoxActive) {
             box.velocity *= box.damping;
             box.y += box.velocity;
             
-            // Check for character landing impact
             if(i < array_length(characterList) && !box.hasBeenHit) {
                 var character = characterList[i];
                 with (character.inst) {
@@ -203,7 +191,6 @@ if(battleBoxActive) {
                 }
             }
             
-            // Handle impact spring effect
             if(abs(box.impactOffset) > 0.1 || abs(box.impactVelocity) > 0.1) {
                 box.impactVelocity += -box.impactOffset * 0.08;
                 box.impactVelocity *= 0.8;
@@ -219,7 +206,7 @@ if(battleBoxActive) {
         battleBoxes[i] = box;
     }
     
-    // Check if exiting battle mode and all boxes are off screen
+    // Verifica saída do modo batalha
     if (!movingUp) {
         var allBoxesGone = true;
         for (var i = 0; i < array_length(battleBoxes); i++) {
@@ -229,7 +216,6 @@ if(battleBoxActive) {
             }
         }
         
-        // More lenient character check - only require they're not jumping or landed on boxes
         var allCharactersReturned = true;
         if (instance_exists(objPlayer)) {
             with (objPlayer) {
@@ -245,13 +231,11 @@ if(battleBoxActive) {
             }
         }
         
-        // Disable battle mode when everything is back to normal
         if (allBoxesGone || allCharactersReturned) {
             battleBoxActive = false;
             battleBoxes = [];
-            movingUp = true; // Reset for next entry
+            movingUp = true;
             
-            // Force reset any characters that might be stuck
             if (instance_exists(objPlayer)) {
                 with (objPlayer) {
                     if (jumpState != "none" && jumpState != "jumping") {
@@ -282,11 +266,9 @@ bottomLerpAmount = clamp(bottomLerpAmount, 0.12, 0.35);
 topBarY = lerp(topBarY, topBarTargetY, topLerpAmount);
 bottomBarY = lerp(bottomBarY, bottomBarTargetY, bottomLerpAmount);
 
-//Top bar scrolls right (+)
 topBarScrollX += barScrollSpeed;
 if(topBarScrollX >= 32) topBarScrollX -= 32;
 
-//Bottom bar scrolls left (-)
 bottomBarScrollX -= barScrollSpeed;
 if(bottomBarScrollX <= -32) bottomBarScrollX += 32;
 

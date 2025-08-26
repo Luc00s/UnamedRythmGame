@@ -11,7 +11,6 @@ if(battleBoxActive) {
         var box = battleBoxes[i];
         var boxDrawY = box.y + box.impactOffset;
         
-        // Draw battle box background texture
         for(var tileX = -1; tileX < 3; tileX++) {
             for(var tileY = -1; tileY < 2; tileY++) {
                 var drawX = box.x + 4 + (tileX * 32) + textureScrollX;
@@ -36,10 +35,8 @@ if(battleBoxActive) {
             }
         }
         
-        // Draw main battle box
         draw_sprite(sprBattleBox, 0, box.x, boxDrawY);
         
-        // Draw battle name box and character name
         var playerNames = ["violet", "red", "robot", "gang"];
         if (i < array_length(playerNames)) {
             var playerName = playerNames[i];
@@ -47,12 +44,10 @@ if(battleBoxActive) {
                 var player = playerStats[$ playerName];
                 var characterName = player.name;
                 
-                // Set font and measure text
                 draw_set_font(fn1);
                 var textWidth = string_width(characterName);
                 var textHeight = string_height(characterName);
-                
-                // Calculate name box size and position
+
                 var nameBoxWidth = textWidth + 8;
                 var nameBoxHeight = textHeight;
                 var nameBoxCenterX = box.x + 34;
@@ -60,7 +55,6 @@ if(battleBoxActive) {
                 var nameBoxX = nameBoxCenterX - (nameBoxWidth / 2);
                 var nameBoxY = nameBoxCenterY - (nameBoxHeight / 2);
                 
-                // Draw scaled name box
                 var scaleX = nameBoxWidth / sprite_get_width(sprBattleNameBox);
                 var scaleY = nameBoxHeight / sprite_get_height(sprBattleNameBox);
                 draw_sprite_ext(sprBattleNameBox, 0, nameBoxX, nameBoxY, scaleX, scaleY, 0, c_white, 1);
@@ -71,7 +65,6 @@ if(battleBoxActive) {
                 draw_set_valign(fa_middle);
                 draw_text(nameBoxCenterX, nameBoxCenterY - 1, characterName);
                 
-                // Draw status effects (if any)
                 if (array_length(player.status) > 0) {
                     var statusText = "";
                     for (var s = 0; s < array_length(player.status); s++) {
@@ -91,7 +84,6 @@ if(battleBoxActive) {
             }
         }
         
-        // Draw score and element sprites
         var leftScoreX = box.x + 7;
         var rightScoreX = box.x + 36;
         var scoreY = boxDrawY + 10;

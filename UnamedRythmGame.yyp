@@ -69,6 +69,7 @@
     {"id":{"name":"ObjCharterEditor","path":"objects/ObjCharterEditor/ObjCharterEditor.yy",},},
     {"id":{"name":"objControl","path":"objects/objControl/objControl.yy",},},
     {"id":{"name":"objDualGridGround","path":"objects/objDualGridGround/objDualGridGround.yy",},},
+    {"id":{"name":"ObjEnemie","path":"objects/ObjEnemie/ObjEnemie.yy",},},
     {"id":{"name":"ObjFlash","path":"objects/ObjFlash/ObjFlash.yy",},},
     {"id":{"name":"ObjFollower","path":"objects/ObjFollower/ObjFollower.yy",},},
     {"id":{"name":"objPlayer","path":"objects/objPlayer/objPlayer.yy",},},
