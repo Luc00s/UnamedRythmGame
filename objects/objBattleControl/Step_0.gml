@@ -91,10 +91,10 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpDelay = i * 8; // Same delay as battle boxes
                 jumpDelayTimer = 0;
                 
-                //Calculate jump duration and height - even more vertical and consistent timing
+                //Calculate jump duration and height - slower and lower
                 var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
-                jumpDuration = max(45, min(80, jumpDistance * 0.25)); // Slower, more dramatic timing
-                jumpMaxHeight = max(120, jumpDistance * 0.8); // Even more vertical
+                jumpDuration = max(60, min(100, jumpDistance * 0.35)); // Much slower timing
+                jumpMaxHeight = max(80, jumpDistance * 0.5); // Lower height
                 
                 battleBoxIndex = i;
             }
@@ -206,5 +206,5 @@ if(bottomBarScrollX <= -32) bottomBarScrollX += 32;
 
 textureScrollX += textureScrollSpeedX;
 textureScrollY -= textureScrollSpeedY;
-if(textureScrollX >= 16) textureScrollX -= 16;
-if(textureScrollY <= -16) textureScrollY += 16;
+if(textureScrollX >= 32) textureScrollX -= 32;
+if(textureScrollY <= -32) textureScrollY += 32;

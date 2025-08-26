@@ -11,21 +11,21 @@ if(battleBoxActive) {
         var box = battleBoxes[i];
         var boxDrawY = box.y + box.impactOffset;
         
-        for(var tileX = -1; tileX < 5; tileX++) {
-            for(var tileY = -1; tileY < 3; tileY++) {
-                var drawX = box.x + 4 + (tileX * 16) + textureScrollX;
-                var drawY = boxDrawY + 4 + (tileY * 16) + textureScrollY;
+        for(var tileX = -1; tileX < 3; tileX++) {
+            for(var tileY = -1; tileY < 2; tileY++) {
+                var drawX = box.x + 4 + (tileX * 32) + textureScrollX;
+                var drawY = boxDrawY + 4 + (tileY * 32) + textureScrollY;
                 
-                if(drawX + 16 > box.x + 4 && drawY + 16 > boxDrawY + 4 && 
+                if(drawX + 32 > box.x + 4 && drawY + 32 > boxDrawY + 4 && 
                    drawX < box.x + 64 && drawY < boxDrawY + 28) {
                     
                     var clipLeft = max(0, (box.x + 4) - drawX);
                     var clipTop = max(0, (boxDrawY + 4) - drawY);
-                    var clipRight = max(0, (drawX + 16) - (box.x + 64));
-                    var clipBottom = max(0, (drawY + 16) - (boxDrawY + 28));
+                    var clipRight = max(0, (drawX + 32) - (box.x + 64));
+                    var clipBottom = max(0, (drawY + 32) - (boxDrawY + 28));
                     
-                    var clipWidth = 16 - clipLeft - clipRight;
-                    var clipHeight = 16 - clipTop - clipBottom;
+                    var clipWidth = 32 - clipLeft - clipRight;
+                    var clipHeight = 32 - clipTop - clipBottom;
                     
                     if(clipWidth > 0 && clipHeight > 0) {
                         draw_sprite_part(sprBattleBoxBack, i % 3, clipLeft, clipTop, clipWidth, clipHeight, 
