@@ -11,6 +11,7 @@ if(battleBoxActive) {
         var box = battleBoxes[i];
         var boxDrawY = box.y + box.impactOffset;
         
+        // Draw battle box background texture
         for(var tileX = -1; tileX < 3; tileX++) {
             for(var tileY = -1; tileY < 2; tileY++) {
                 var drawX = box.x + 4 + (tileX * 32) + textureScrollX;
@@ -35,52 +36,42 @@ if(battleBoxActive) {
             }
         }
         
+        // Draw main battle box
         draw_sprite(sprBattleBox, 0, box.x, boxDrawY);
         
-        var leftScoreX = box.x + 7; // Position sprite so its right edge is 4 pixels from box left
-        var rightScoreX = box.x + 36; // Position sprite so its left edge is 4 pixels from box right (68 is box width)
-        var scoreY = boxDrawY + 10;
-        
-        // Left score sprite (index 0)
-        draw_sprite(sprBattleScore, 0, leftScoreX, scoreY);
-        
-        // Right score sprite (index 1) 
-        draw_sprite(sprBattleScore, 1, rightScoreX, scoreY);
-		
-        var leftScoreSprite = box.x-3; // Position sprite so its right edge is 4 pixels from box left
-        var rightScoreSprite = box.x + 61; // Position sprite so its left edge is 4 pixels from box right (68 is box width)
-        
-        // Left score sprite (index 0)
-        draw_sprite(sprBattleElement, 0, leftScoreSprite, scoreY-1);
-        
-        // Right score sprite (index 1) 
-        draw_sprite(sprBattleElement, 1, rightScoreSprite, scoreY-1);
-        
-        // Draw HP and Mana for each player
+        // Draw battle name box and character name
         var playerNames = ["violet", "red", "robot", "gang"];
         if (i < array_length(playerNames)) {
             var playerName = playerNames[i];
             if (variable_struct_exists(playerStats, playerName)) {
                 var player = playerStats[$ playerName];
+                var characterName = player.name;
                 
-                // Set text properties
+                // Set font and measure text
                 draw_set_font(fn1);
-                draw_set_halign(fa_left);
-                draw_set_valign(fa_top);
+                var textWidth = string_width(characterName);
+                var textHeight = string_height(characterName);
                 
-                // HP text (left side) - format as 3 digits with small spacing
-                draw_set_color(c_black);
-                var healthStr = string_format(player.health, 3, 0);
-                var healthFormatted = string_char_at(healthStr, 1) + string_char_at(healthStr, 2) + string_char_at(healthStr, 3);
-                draw_text(leftScoreX + 1, scoreY, healthFormatted);
+                // Calculate name box size and position
+                var nameBoxWidth = textWidth + 8;
+                var nameBoxHeight = textHeight;
+                var nameBoxCenterX = box.x + 34;
+                var nameBoxCenterY = boxDrawY;
+                var nameBoxX = nameBoxCenterX - (nameBoxWidth / 2);
+                var nameBoxY = nameBoxCenterY - (nameBoxHeight / 2);
                 
-                // Mana text (right side) - format as 3 digits with small spacing
-                draw_set_color(c_black);
-                var manaStr = string_format(player.mana, 3, 0);
-                var manaFormatted = string_char_at(manaStr, 1) + string_char_at(manaStr, 2) + string_char_at(manaStr, 3);
-                draw_text(rightScoreX - 1, scoreY, manaFormatted);
+                // Draw scaled name box
+                var scaleX = nameBoxWidth / sprite_get_width(sprBattleNameBox);
+                var scaleY = nameBoxHeight / sprite_get_height(sprBattleNameBox);
+                draw_sprite_ext(sprBattleNameBox, 0, nameBoxX, nameBoxY, scaleX, scaleY, 0, c_white, 1);
                 
-                // Status effects (if any)
+                // Draw character name
+                draw_set_color(c_white);
+                draw_set_halign(fa_center);
+                draw_set_valign(fa_middle);
+                draw_text(nameBoxCenterX, nameBoxCenterY - 1, characterName);
+                
+                // Draw status effects (if any)
                 if (array_length(player.status) > 0) {
                     var statusText = "";
                     for (var s = 0; s < array_length(player.status); s++) {
@@ -88,6 +79,8 @@ if(battleBoxActive) {
                         if (s < array_length(player.status) - 1) statusText += ",";
                     }
                     draw_set_color(c_yellow);
+                    draw_set_halign(fa_left);
+                    draw_set_valign(fa_top);
                     draw_text(box.x + 5, boxDrawY + 30, statusText);
                 }
                 
@@ -97,7 +90,17 @@ if(battleBoxActive) {
                 draw_set_valign(fa_top);
             }
         }
+        
+        // Draw score and element sprites
+        var leftScoreX = box.x + 7;
+        var rightScoreX = box.x + 36;
+        var scoreY = boxDrawY + 10;
+        var leftElementX = box.x - 3;
+        var rightElementX = box.x + 61;
+        
+        draw_sprite(sprBattleScore, 0, leftScoreX, scoreY);
+        draw_sprite(sprBattleScore, 1, rightScoreX, scoreY);
+        draw_sprite(sprBattleElement, 0, leftElementX, scoreY - 1);
+        draw_sprite(sprBattleElement, 1, rightElementX, scoreY - 1);
     }
 }
-
-draw_text(32,32,string(mouse_x) + " " + string(mouse_y))
