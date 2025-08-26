@@ -2,21 +2,57 @@
 if (jumpState == "waiting") {
     jumpDelayTimer++;
     if (jumpDelayTimer >= jumpDelay) {
-        jumpState = "jumping";
-        jumpDelayTimer = 0;
+        if (jumpIsExiting || jumpPrepDuration == 0) {
+            // Skip preparation for exit jumps
+            jumpState = "jumping";
+            jumpProgress = 0;
+        } else {
+            jumpState = "preparing";
+            jumpDelayTimer = 0;
+            jumpPrepTimer = 0;
+            sprite_index = sprPlayerJumpToFight;
+            image_index = 0; // Ground preparation sprite
+        }
     }
     //Skip normal following during wait
+} else if (jumpState == "preparing") {
+    jumpPrepTimer++;
+    sprite_index = sprPlayerJumpToFight;
+    image_index = 0; // Stay in ground preparation sprite
+    if (jumpPrepTimer >= jumpPrepDuration) {
+        jumpState = "jumping";
+        jumpProgress = 0;
+    }
+    //Skip normal following during preparation
 } else if (jumpState == "jumping") {
     jumpProgress += 1 / jumpDuration;
     
     if (jumpProgress >= 1) {
         //Jump complete - land exactly on target
         jumpProgress = 1;
-        jumpState = "landed";
-        x = jumpTargetX;
-        y = jumpTargetY;
-        jumpCurrentX = jumpTargetX;
-        jumpCurrentY = jumpTargetY;
+        
+        // Check if this is a return jump to original position
+        if (point_distance(jumpTargetX, jumpTargetY, jumpOriginalX, jumpOriginalY) < 5) {
+            // Returning to original position - free for normal movement
+            jumpState = "none";
+            x = jumpTargetX;
+            y = jumpTargetY;
+            jumpIsExiting = false; // Reset exit flag
+            battleBoxIndex = -1;
+            
+            // Reset all jump variables for clean re-entry
+            jumpProgress = 0;
+            jumpDelayTimer = 0;
+            jumpPrepTimer = 0;
+            // Don't set sprite here - let normal follower logic handle it
+        } else {
+            // Landing on battle box
+            jumpState = "landed";
+            x = jumpTargetX;
+            y = jumpTargetY;
+            jumpCurrentX = jumpTargetX;
+            jumpCurrentY = jumpTargetY;
+        }
     } else {
         //Calculate smooth arc trajectory
         jumpCurrentX = lerp(jumpStartX, jumpTargetX, jumpProgress);
@@ -30,7 +66,7 @@ if (jumpState == "waiting") {
         sprite_index = sprPlayerJumpToFight;
         if (jumpProgress < 0.5) {
             //Going up
-            image_index = 0;
+            image_index = 1;
         } else {
             //Coming down
             image_index = 1;
@@ -46,9 +82,16 @@ if (jumpState == "waiting") {
     
     //Skip normal following during jump
 } else if (jumpState == "landed") {
-    //Stay at landing position
-    x = jumpTargetX;
-    y = jumpTargetY;
+    //Follow the battle box position including impact offset
+    if (instance_exists(objBattleControl) && battleBoxIndex >= 0) {
+        with (objBattleControl) {
+            if (other.battleBoxIndex < array_length(battleBoxes)) {
+                var box = battleBoxes[other.battleBoxIndex];
+                other.x = box.x + 34; // Center of battle box
+                other.y = box.y + box.impactOffset + 24; // Follow box movement + impact
+            }
+        }
+    }
     
     //Skip normal following when landed
 } else {

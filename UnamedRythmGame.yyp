@@ -110,6 +110,8 @@
     {"id":{"name":"sprBattleBlackBar","path":"sprites/sprBattleBlackBar/sprBattleBlackBar.yy",},},
     {"id":{"name":"sprBattleBox","path":"sprites/sprBattleBox/sprBattleBox.yy",},},
     {"id":{"name":"sprBattleBoxBack","path":"sprites/sprBattleBoxBack/sprBattleBoxBack.yy",},},
+    {"id":{"name":"sprBattleElement","path":"sprites/sprBattleElement/sprBattleElement.yy",},},
+    {"id":{"name":"sprBattleScore","path":"sprites/sprBattleScore/sprBattleScore.yy",},},
     {"id":{"name":"SprGrassTexture","path":"sprites/SprGrassTexture/SprGrassTexture.yy",},},
     {"id":{"name":"SprGrassTile","path":"sprites/SprGrassTile/SprGrassTile.yy",},},
     {"id":{"name":"Sprite13","path":"sprites/Sprite13/Sprite13.yy",},},

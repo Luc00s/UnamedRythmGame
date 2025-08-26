@@ -1,6 +1,8 @@
 battleBoxes = [];
 battleBoxActive = false;
 battleBoxCount = 1;
+battleExitTimer = 0;
+battleExitTimeout = 300; // 5 seconds timeout
 
 //Function to count active party members (player + followers)
 function getPartyMemberCount() {

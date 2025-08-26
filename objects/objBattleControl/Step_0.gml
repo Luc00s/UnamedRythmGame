@@ -82,7 +82,11 @@ if(keyboard_check_pressed(vk_space)) {
         for (var i = 0; i < min(array_length(characterList), array_length(battleBoxes)); i++) {
             var character = characterList[i];
             with (character.inst) {
+                // Ensure clean state for battle entry
                 jumpState = "waiting";
+                jumpOriginalX = x; // Store current position
+                jumpOriginalY = y;
+                jumpOriginalSprite = sprite_index; // Store current sprite
                 jumpStartX = x;
                 jumpStartY = y;
                 jumpTargetX = other.battleBoxes[i].x + 34; // Center of battle box
@@ -90,6 +94,9 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpProgress = 0;
                 jumpDelay = i * 8; // Same delay as battle boxes
                 jumpDelayTimer = 0;
+                jumpPrepTimer = 0; // Timer for ground preparation phase
+                jumpPrepDuration = 30; // 0.5 seconds at 60 fps
+                jumpIsExiting = false; // This is an entry jump
                 
                 //Calculate jump duration and height - slower and lower
                 var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
@@ -97,11 +104,15 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpMaxHeight = max(80, jumpDistance * 0.5); // Lower height
                 
                 battleBoxIndex = i;
+                
             }
         }
     } else {
         movingUp = !movingUp;
         animationTimer = 0;
+        
+        // Don't reset characters immediately - let them complete their exit jumps
+        // The normal exit detection will handle cleanup when jumps are complete
         
         for(var i = 0; i < array_length(battleBoxes); i++) {
             var box = battleBoxes[i];
@@ -120,6 +131,11 @@ if(keyboard_check_pressed(vk_space)) {
                 box.targetY = room_height + 50;
                 topBarTargetY = -35;
                 bottomBarTargetY = room_height + 96;
+                // Reset box impact state for next battle
+                box.hasBeenHit = false;
+                box.impactOffset = 0;
+                box.impactVelocity = 0;
+                
             }
             
             battleBoxes[i] = box;
@@ -146,6 +162,26 @@ if(battleBoxActive) {
         
         if(animationTimer >= box.animationDelay) {
             box.hasStarted = true;
+            
+            // Make character jump when their box starts exiting
+            if (!movingUp && i < array_length(characterList)) {
+                var character = characterList[i];
+                with (character.inst) {
+                    if (jumpState == "landed" && battleBoxIndex == i) {
+                        jumpState = "jumping"; // Jump instantly when box starts exiting
+                        jumpStartX = x;
+                        jumpStartY = y;
+                        jumpTargetX = jumpOriginalX;
+                        jumpTargetY = jumpOriginalY;
+                        jumpProgress = 0;
+                        jumpIsExiting = true; // Mark this as an exit jump
+                        
+                        var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
+                        jumpDuration = max(60, min(100, jumpDistance * 0.35));
+                        jumpMaxHeight = max(80, jumpDistance * 0.5);
+                    }
+                }
+            }
         }
         
         if(box.hasStarted) {
@@ -170,7 +206,7 @@ if(battleBoxActive) {
             // Handle impact spring effect
             if(abs(box.impactOffset) > 0.1 || abs(box.impactVelocity) > 0.1) {
                 box.impactVelocity += -box.impactOffset * 0.08;
-                box.impactVelocity *= 0.95;
+                box.impactVelocity *= 0.8;
                 box.impactOffset += box.impactVelocity;
                 
                 if(abs(box.impactOffset) < 0.1 && abs(box.impactVelocity) < 0.1) {
@@ -183,6 +219,56 @@ if(battleBoxActive) {
         battleBoxes[i] = box;
     }
     
+    // Check if exiting battle mode and all boxes are off screen
+    if (!movingUp) {
+        var allBoxesGone = true;
+        for (var i = 0; i < array_length(battleBoxes); i++) {
+            if (battleBoxes[i].y < room_height + 100) {
+                allBoxesGone = false;
+                break;
+            }
+        }
+        
+        // More lenient character check - only require they're not jumping or landed on boxes
+        var allCharactersReturned = true;
+        if (instance_exists(objPlayer)) {
+            with (objPlayer) {
+                if (jumpState == "landed" || jumpState == "jumping") {
+                    allCharactersReturned = false;
+                }
+            }
+        }
+        
+        with (ObjFollower) {
+            if (jumpState == "landed" || jumpState == "jumping") {
+                allCharactersReturned = false;
+            }
+        }
+        
+        // Disable battle mode when everything is back to normal
+        if (allBoxesGone || allCharactersReturned) {
+            battleBoxActive = false;
+            battleBoxes = [];
+            movingUp = true; // Reset for next entry
+            
+            // Force reset any characters that might be stuck
+            if (instance_exists(objPlayer)) {
+                with (objPlayer) {
+                    if (jumpState != "none" && jumpState != "jumping") {
+                        jumpState = "none";
+                        battleBoxIndex = -1;
+                    }
+                }
+            }
+            
+            with (ObjFollower) {
+                if (jumpState != "none" && jumpState != "jumping") {
+                    jumpState = "none";
+                    battleBoxIndex = -1;
+                }
+            }
+        }
+    }
 }
 
 barAnimTimer++;

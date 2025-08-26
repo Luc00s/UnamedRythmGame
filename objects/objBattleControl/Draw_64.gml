@@ -36,5 +36,24 @@ if(battleBoxActive) {
         }
         
         draw_sprite(sprBattleBox, 0, box.x, boxDrawY);
+        
+        var leftScoreX = box.x + 7; // Position sprite so its right edge is 4 pixels from box left
+        var rightScoreX = box.x + 36; // Position sprite so its left edge is 4 pixels from box right (68 is box width)
+        var scoreY = boxDrawY + 10;
+        
+        // Left score sprite (index 0)
+        draw_sprite(sprBattleScore, 0, leftScoreX, scoreY);
+        
+        // Right score sprite (index 1) 
+        draw_sprite(sprBattleScore, 1, rightScoreX, scoreY);
+		
+        var leftScoreSprite = box.x-3; // Position sprite so its right edge is 4 pixels from box left
+        var rightScoreSprite = box.x + 61; // Position sprite so its left edge is 4 pixels from box right (68 is box width)
+        
+        // Left score sprite (index 0)
+        draw_sprite(sprBattleElement, 0, leftScoreSprite, scoreY-1);
+        
+        // Right score sprite (index 1) 
+        draw_sprite(sprBattleElement, 1, rightScoreSprite, scoreY-1);
     }
 }

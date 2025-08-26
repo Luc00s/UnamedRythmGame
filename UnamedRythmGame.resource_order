@@ -74,6 +74,8 @@
     {"name":"SprArrow","order":4,"path":"sprites/SprArrow/SprArrow.yy",},
     {"name":"sprBattleBox","order":1,"path":"sprites/sprBattleBox/sprBattleBox.yy",},
     {"name":"sprBattleBoxBack","order":2,"path":"sprites/sprBattleBoxBack/sprBattleBoxBack.yy",},
+    {"name":"sprBattleElement","order":3,"path":"sprites/sprBattleElement/sprBattleElement.yy",},
+    {"name":"sprBattleScore","order":4,"path":"sprites/sprBattleScore/sprBattleScore.yy",},
     {"name":"SprGrassTexture","order":9,"path":"sprites/SprGrassTexture/SprGrassTexture.yy",},
     {"name":"SprGrassTile","order":8,"path":"sprites/SprGrassTile/SprGrassTile.yy",},
     {"name":"Sprite13","order":10,"path":"sprites/Sprite13/Sprite13.yy",},
