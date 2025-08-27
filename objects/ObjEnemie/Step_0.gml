@@ -4,6 +4,31 @@ var moveY = 0;
 switch (enemyState) {
     case "wandering":
         wanderTimer++;
+        lastDirectionChange++;
+        stuckTimer++;
+        
+        if (stuckTimer >= positionCheckInterval) {
+            var currentPos = [x, y];
+            var distMoved = point_distance(lastPosition[0], lastPosition[1], currentPos[0], currentPos[1]);
+            
+            if (distMoved < 5 && isWandering) {
+                var avoidDir = irandom(360);
+                for (var i = 0; i < 8; i++) {
+                    var testDir = avoidDir + (i * 45);
+                    var checkX = x + lengthdir_x(collisionAvoidDistance, testDir);
+                    var checkY = y + lengthdir_y(collisionAvoidDistance, testDir);
+                    
+                    if (!place_meeting(checkX, checkY, parSolid)) {
+                        targetDir = testDir;
+                        break;
+                    }
+                }
+                wanderMomentum = min(wanderMomentum + 0.3, maxWanderMomentum);
+            }
+            
+            lastPosition = currentPos;
+            stuckTimer = 0;
+        }
         
         if (!isWandering) {
             if (wanderTimer >= wanderDelay) {
@@ -11,27 +36,88 @@ switch (enemyState) {
                 wanderTimer = 0;
                 wanderDelay = irandom_range(60, 180);
                 wanderDuration = irandom_range(30, 120);
+                pauseTimer = 0;
                 
-                targetDir = choose(0, 45, 90, 135, 180, 225, 270, 315);
+                var newDir = currentDir + irandom_range(-90, 90);
+                var checkX = x + lengthdir_x(collisionAvoidDistance, newDir);
+                var checkY = y + lengthdir_y(collisionAvoidDistance, newDir);
+                
+                if (!place_meeting(checkX, checkY, parSolid)) {
+                    targetDir = newDir;
+                } else {
+                    for (var i = 0; i < 8; i++) {
+                        var testDir = irandom(360);
+                        checkX = x + lengthdir_x(collisionAvoidDistance, testDir);
+                        checkY = y + lengthdir_y(collisionAvoidDistance, testDir);
+                        
+                        if (!place_meeting(checkX, checkY, parSolid)) {
+                            targetDir = testDir;
+                            break;
+                        }
+                    }
+                }
             }
         } else {
             if (wanderTimer >= wanderDuration) {
                 isWandering = false;
                 wanderTimer = 0;
+                wanderMomentum = 0;
             } else {
-                var distanceFromOriginal = point_distance(x, y, originalX, originalY);
-                
-                if (distanceFromOriginal < maxWanderDistance) {
-                    moveX = lengthdir_x(1, targetDir);
-                    moveY = lengthdir_y(1, targetDir);
+                if (pauseTimer > 0) {
+                    pauseTimer--;
+                    moveX = 0;
+                    moveY = 0;
                 } else {
-                    targetDir = point_direction(x, y, originalX, originalY);
-                    moveX = lengthdir_x(1, targetDir);
-                    moveY = lengthdir_y(1, targetDir);
+                    if (random(1) < pauseChance) {
+                        pauseTimer = pauseDuration;
+                        pauseDuration = irandom_range(20, 80);
+                    } else {
+                        var distanceFromOriginal = point_distance(x, y, originalX, originalY);
+                        
+                        if (distanceFromOriginal >= maxWanderDistance * 0.8) {
+                            var returnDir = point_direction(x, y, originalX, originalY);
+                            var weight = min(1, (distanceFromOriginal - maxWanderDistance * 0.8) / (maxWanderDistance * 0.2));
+                            targetDir = lerp(targetDir, returnDir, weight * 0.5);
+                        } else if (lastDirectionChange >= directionChangeInterval) {
+                            var angleChange = irandom_range(-60, 60);
+                            var newDir = targetDir + angleChange;
+                            
+                            var checkX = x + lengthdir_x(collisionAvoidDistance, newDir);
+                            var checkY = y + lengthdir_y(collisionAvoidDistance, newDir);
+                            
+                            if (!place_meeting(checkX, checkY, parSolid)) {
+                                targetDir = newDir;
+                            } else {
+                                for (var i = -3; i <= 3; i++) {
+                                    var testDir = newDir + (i * 30);
+                                    checkX = x + lengthdir_x(collisionAvoidDistance, testDir);
+                                    checkY = y + lengthdir_y(collisionAvoidDistance, testDir);
+                                    
+                                    if (!place_meeting(checkX, checkY, parSolid)) {
+                                        targetDir = testDir;
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            lastDirectionChange = 0;
+                            directionChangeInterval = irandom_range(60, 150);
+                        }
+                        
+                        var dirDiff = angle_difference(targetDir, currentDir);
+                        currentDir += dirDiff * dirSmoothness;
+                        
+                        var moveFactor = 1 + wanderMomentum;
+                        moveX = lengthdir_x(moveFactor, currentDir);
+                        moveY = lengthdir_y(moveFactor, currentDir);
+                        
+                        wanderMomentum *= momentumDecay;
+                        if (wanderMomentum < 0.01) wanderMomentum = 0;
+                    }
                 }
             }
         }
-        spd = normalSpd;
+        spd = normalSpd * (pauseTimer > 0 ? 0.3 : 1);
         break;
         
     case "chasing":
@@ -178,11 +264,13 @@ switch (enemyState) {
 
 if (moveX != 0 or moveY != 0) {
     dir = point_direction(0, 0, moveX, moveY);
-    hsp = approach(hsp, lengthdir_x(spd, dir), .15);
-    vsp = approach(vsp, lengthdir_y(spd, dir), .15);
+    var accelRate = (enemyState == "wandering") ? 0.08 : 0.15;
+    hsp = approach(hsp, lengthdir_x(spd, dir), accelRate);
+    vsp = approach(vsp, lengthdir_y(spd, dir), accelRate);
 } else {
-    hsp = approach(hsp, 0, .15);
-    vsp = approach(vsp, 0, .15);
+    var decelRate = (enemyState == "wandering") ? 0.12 : 0.15;
+    hsp = approach(hsp, 0, decelRate);
+    vsp = approach(vsp, 0, decelRate);
 }
 
 xSpeedLeft += hsp;

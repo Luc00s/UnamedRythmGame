@@ -40,6 +40,22 @@ isWandering = false;
 
 targetDir = 270;
 
+currentDir = 270;
+dirSmoothness = 0.15;
+wanderRadius = 24;
+collisionAvoidDistance = 20;
+lastDirectionChange = 0;
+directionChangeInterval = irandom_range(60, 150);
+stuckTimer = 0;
+lastPosition = [x, y];
+positionCheckInterval = 30;
+wanderMomentum = 0;
+maxWanderMomentum = 1.2;
+momentumDecay = 0.98;
+pauseTimer = 0;
+pauseChance = 0.08;
+pauseDuration = irandom_range(20, 80);
+
 visionRange = 80;
 visionAngle = 60;
 debugVision = true;
