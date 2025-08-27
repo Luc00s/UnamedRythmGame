@@ -8,10 +8,14 @@ if (!variable_instance_exists(id, "dialog_active") || !dialog_active) {
 
 // Gerencia pausa na pontuação
 if (variable_instance_exists(id, "dialog_paused_at_punctuation") && dialog_paused_at_punctuation) {
+    FMODManager.interrupt_speech();
+    
     if (variable_instance_exists(id, "dialog_punctuation_counter")) {
         dialog_punctuation_counter--;
         if (dialog_punctuation_counter <= 0) {
             dialog_paused_at_punctuation = false;
+            
+            FMODManager.resume_speech();
         }
     }
     exit;
@@ -44,6 +48,8 @@ if (variable_instance_exists(id, "dialog_finished") && !dialog_finished) {
                             if (variable_instance_exists(id, "dialog_punctuation_pause_time")) {
                                 dialog_punctuation_counter = dialog_punctuation_pause_time;
                             }
+                            
+                            FMODManager.interrupt_speech();
                             break;
                         }
                     }
@@ -52,6 +58,8 @@ if (variable_instance_exists(id, "dialog_finished") && !dialog_finished) {
                       dialog_position >= string_length(dialog_text)) {
                 // Terminou de digitar
                 dialog_finished = true;
+                
+                FMODManager.interrupt_speech();
             }
         }
     }
