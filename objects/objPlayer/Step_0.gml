@@ -1,5 +1,10 @@
-var moveX = keyboard_check(vk_right)-keyboard_check(vk_left);
-var moveY = keyboard_check(vk_down)-keyboard_check(vk_up);
+var moveX = 0;
+var moveY = 0;
+
+if (canMove && jumpState == "none") {
+    moveX = keyboard_check(vk_right)-keyboard_check(vk_left);
+    moveY = keyboard_check(vk_down)-keyboard_check(vk_up);
+}
 
 // Lógica de salto para batalha
 if (jumpState == "waiting") {
@@ -16,6 +21,7 @@ if (jumpState == "waiting") {
             image_index = 0;
         }
     }
+    return;
 } else if (jumpState == "preparing") {
     jumpPrepTimer++;
     sprite_index = sprPlayerJumpToFight;
@@ -24,6 +30,7 @@ if (jumpState == "waiting") {
         jumpState = "jumping";
         jumpProgress = 0;
     }
+    return;
 } else if (jumpState == "jumping") {
     jumpProgress += 1 / jumpDuration;
     
@@ -38,6 +45,10 @@ if (jumpState == "waiting") {
             sprite_index = jumpOriginalSprite;
             jumpIsExiting = false;
             battleBoxIndex = -1;
+            canMove = true;
+            spriteAction = "";
+            image_speed = 0;
+            image_index = 0;
             
             jumpProgress = 0;
             jumpDelayTimer = 0;
@@ -65,10 +76,12 @@ if (jumpState == "waiting") {
         }
         
         x = jumpCurrentX;
+        y = jumpCurrentY;
         drawX = jumpCurrentX;
         drawY = jumpCurrentY;
         
         depth = -10000;
+        return;
     }
     
 } else if (jumpState == "landed") {
@@ -82,6 +95,7 @@ if (jumpState == "waiting") {
             }
         }
     }
+    return;
     
 } else {
     // Movimento normal
@@ -98,7 +112,7 @@ if (jumpState == "waiting") {
     else spd = approach(spd, normalSpd, .1);
 
     // Animação do sprite
-    if(abs(hsp) > 0.1 or abs(vsp) > 0.1) {
+    if((abs(hsp) > 0.1 or abs(vsp) > 0.1) && canMove) {
         image_speed = abs(hsp)+abs(vsp);
         image_speed = clamp(image_speed, 0, spd);
         
@@ -125,6 +139,11 @@ if (jumpState == "waiting") {
         else image_index = 0;
         
         spriteAction = "";
+        
+        if (!canMove) {
+            image_speed = 0;
+            image_index = 0;
+        }
     }
 
     // Definição de sprites direcionais
@@ -143,7 +162,16 @@ if (jumpState == "waiting") {
     }
     sprite_index = asset_get_index(_sprite);
 
+    xSpeedLeft += impactX;
+    ySpeedLeft += impactY;
+    
     collision();
+    
+    impactX *= impactDecay;
+    impactY *= impactDecay;
+    
+    if (abs(impactX) < 0.1) impactX = 0;
+    if (abs(impactY) < 0.1) impactY = 0;
     
     drawY = y;
 }

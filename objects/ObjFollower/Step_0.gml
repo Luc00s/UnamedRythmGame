@@ -12,6 +12,7 @@ if (jumpState == "waiting") {
             image_index = 0;
         }
     }
+    return;
 } else if (jumpState == "preparing") {
     jumpPrepTimer++;
     sprite_index = sprPlayerJumpToFight;
@@ -20,6 +21,7 @@ if (jumpState == "waiting") {
         jumpState = "jumping";
         jumpProgress = 0;
     }
+    return;
 } else if (jumpState == "jumping") {
     jumpProgress += 1 / jumpDuration;
     
@@ -32,6 +34,9 @@ if (jumpState == "waiting") {
             y = jumpTargetY;
             jumpIsExiting = false;
             battleBoxIndex = -1;
+            canMove = true;
+            image_speed = 0;
+            image_index = 0;
             
             jumpProgress = 0;
             jumpDelayTimer = 0;
@@ -61,6 +66,7 @@ if (jumpState == "waiting") {
         y = jumpCurrentY;
         
         depth = -10000;
+        return;
     }
     
 } else if (jumpState == "landed") {
@@ -73,9 +79,10 @@ if (jumpState == "waiting") {
             }
         }
     }
+    return;
     
 } else {
-    if (instance_exists(objPlayer)) {
+    if (instance_exists(objPlayer) && canMove) {
         var bufferIndex = (objPlayer.historyIndex - record + objPlayer.historyBufferSize) % objPlayer.historyBufferSize;
         bufferIndex = max(0, min(bufferIndex, objPlayer.historyBufferSize - 1));
         
@@ -99,7 +106,7 @@ if (jumpState == "waiting") {
         var movementDistance = point_distance(lastX, lastY, x, y);
         var isMoving = movementDistance > 0.1;
         
-        if (isMoving) {
+        if (isMoving && canMove) {
             sprite_index = recordedSprite;
             
             image_speed = clamp(movementDistance, 0.8, 2.5);
@@ -119,6 +126,11 @@ if (jumpState == "waiting") {
             } else {
                 image_index = 0;
             }
+            
+            if (!canMove) {
+                image_speed = 0;
+                image_index = 0;
+            }
         }
         
         image_xscale = recordedXScale;
@@ -129,3 +141,12 @@ if (jumpState == "waiting") {
         depth = -bbox_bottom - followerChainPosition;
     }
 }
+
+x += impactX;
+y += impactY;
+
+impactX *= impactDecay;
+impactY *= impactDecay;
+
+if (abs(impactX) < 0.1) impactX = 0;
+if (abs(impactY) < 0.1) impactY = 0;
