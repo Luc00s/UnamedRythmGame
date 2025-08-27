@@ -170,9 +170,9 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"roomId":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
     {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
+    {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[
