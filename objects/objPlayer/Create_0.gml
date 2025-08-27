@@ -74,5 +74,8 @@ jumpOriginalSprite = sprite_index;
 jumpIsExiting = false;
 battleBoxIndex = -1;
 
-// Som de footstep no FMOD
-//fmod_system_create_sound()
+canMove = true;
+
+impactX = 0;
+impactY = 0;
+impactDecay = 0.85;

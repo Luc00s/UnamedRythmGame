@@ -33,3 +33,9 @@ jumpPrepDuration = 30;
 jumpOriginalSprite = sprite_index;
 jumpIsExiting = false;
 battleBoxIndex = -1;
+
+canMove = true;
+
+impactX = 0;
+impactY = 0;
+impactDecay = 0.85;

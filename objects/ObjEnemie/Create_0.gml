@@ -49,3 +49,25 @@ detectedTargets = [];
 rayCount = 8;
 raycastResults = [];
 maxRayDistance = 120;
+
+enemyState = "wandering";
+chaseTarget = noone;
+chaseSpeed = 0.8;
+returnSpeed = 0.7;
+chaseRange = maxRayDistance;
+lostTargetTimer = 0;
+lostTargetDelay = 120;
+
+avoidanceRays = 5;
+avoidanceRange = 24;
+
+catchRadius = 12;
+hasCaughtPlayer = false;
+
+impactForce = 3;
+impactDecay = 0.85;
+impactX = 0;
+impactY = 0;
+
+battleTransitionTimer = 0;
+battleTransitionDelay = 30;
