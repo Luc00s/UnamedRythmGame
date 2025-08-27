@@ -68,6 +68,7 @@
   "resources":[
     {"id":{"name":"FMOD","path":"extensions/FMOD/FMOD.yy",},},
     {"id":{"name":"fn1","path":"fonts/fn1/fn1.yy",},},
+    {"id":{"name":"DialogManager","path":"objects/DialogManager/DialogManager.yy",},},
     {"id":{"name":"FMODManager","path":"objects/FMODManager/FMODManager.yy",},},
     {"id":{"name":"o_HitParticle","path":"objects/o_HitParticle/o_HitParticle.yy",},},
     {"id":{"name":"o_Shake","path":"objects/o_Shake/o_Shake.yy",},},
@@ -89,6 +90,7 @@
     {"id":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"id":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
     {"id":{"name":"collision","path":"scripts/collision/collision.yy",},},
+    {"id":{"name":"DialogueSystem","path":"scripts/DialogueSystem/DialogueSystem.yy",},},
     {"id":{"name":"ExtBufferIO","path":"scripts/ExtBufferIO/ExtBufferIO.yy",},},
     {"id":{"name":"Fmod_Definitions","path":"scripts/Fmod_Definitions/Fmod_Definitions.yy",},},
     {"id":{"name":"Fmod_Functions","path":"scripts/Fmod_Functions/Fmod_Functions.yy",},},

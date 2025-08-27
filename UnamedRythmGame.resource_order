@@ -41,6 +41,7 @@
   ],
   "ResourceOrderSettings":[
     {"name":"FMOD","order":1,"path":"extensions/FMOD/FMOD.yy",},
+    {"name":"DialogManager","order":5,"path":"objects/DialogManager/DialogManager.yy",},
     {"name":"FMODManager","order":4,"path":"objects/FMODManager/FMODManager.yy",},
     {"name":"o_Shake","order":1,"path":"objects/o_Shake/o_Shake.yy",},
     {"name":"objBattleControl","order":3,"path":"objects/objBattleControl/objBattleControl.yy",},
@@ -55,6 +56,7 @@
     {"name":"RoomEditor","order":2,"path":"rooms/RoomEditor/RoomEditor.yy",},
     {"name":"RoomGame","order":1,"path":"rooms/RoomGame/RoomGame.yy",},
     {"name":"collision","order":3,"path":"scripts/collision/collision.yy",},
+    {"name":"DialogueSystem","order":4,"path":"scripts/DialogueSystem/DialogueSystem.yy",},
     {"name":"Fmod_Definitions","order":2,"path":"scripts/Fmod_Definitions/Fmod_Definitions.yy",},
     {"name":"Fmod_Functions","order":3,"path":"scripts/Fmod_Functions/Fmod_Functions.yy",},
     {"name":"GameScripts","order":1,"path":"scripts/GameScripts/GameScripts.yy",},
