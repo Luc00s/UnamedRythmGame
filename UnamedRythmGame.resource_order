@@ -2,6 +2,8 @@
   "FolderOrderSettings":[
     {"name":"Animation Curves","order":12,"path":"folders/Animation Curves.yy",},
     {"name":"Extensions","order":14,"path":"folders/Extensions.yy",},
+    {"name":"Fmod","order":16,"path":"folders/Fmod.yy",},
+    {"name":"Extensions","order":1,"path":"folders/Fmod/Extensions.yy",},
     {"name":"Fonts","order":6,"path":"folders/Fonts.yy",},
     {"name":"Notes","order":13,"path":"folders/Notes.yy",},
     {"name":"Objects","order":8,"path":"folders/Objects.yy",},
@@ -38,6 +40,8 @@
     {"name":"Timelines","order":7,"path":"folders/Timelines.yy",},
   ],
   "ResourceOrderSettings":[
+    {"name":"FMOD","order":1,"path":"extensions/FMOD/FMOD.yy",},
+    {"name":"FMODManager","order":4,"path":"objects/FMODManager/FMODManager.yy",},
     {"name":"o_Shake","order":1,"path":"objects/o_Shake/o_Shake.yy",},
     {"name":"objBattleControl","order":3,"path":"objects/objBattleControl/objBattleControl.yy",},
     {"name":"objCamera","order":1,"path":"objects/objCamera/objCamera.yy",},
@@ -51,6 +55,8 @@
     {"name":"RoomEditor","order":2,"path":"rooms/RoomEditor/RoomEditor.yy",},
     {"name":"RoomGame","order":1,"path":"rooms/RoomGame/RoomGame.yy",},
     {"name":"collision","order":3,"path":"scripts/collision/collision.yy",},
+    {"name":"Fmod_Definitions","order":2,"path":"scripts/Fmod_Definitions/Fmod_Definitions.yy",},
+    {"name":"Fmod_Functions","order":3,"path":"scripts/Fmod_Functions/Fmod_Functions.yy",},
     {"name":"GameScripts","order":1,"path":"scripts/GameScripts/GameScripts.yy",},
     {"name":"setMusic","order":2,"path":"scripts/setMusic/setMusic.yy",},
     {"name":"sh_outline","order":6,"path":"shaders/sh_outline/sh_outline.yy",},
