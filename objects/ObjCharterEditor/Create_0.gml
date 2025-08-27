@@ -1,3 +1,5 @@
+window_set_fullscreen(1)
+
 enum EEditorMode {
     EDIT,
     TEST
@@ -9,8 +11,6 @@ enum EEditorView {
 }
 editor_view = EEditorView.NORMAL;
 
-surface_resize(application_surface, global.data.screen.width*3, global.data.screen.height*3);
-window_set_size(global.data.screen.width*3, global.data.screen.height*3);
 window_center();
 
 #macro UI_COLOR_BACKGROUND make_color_rgb(18, 18, 22)
