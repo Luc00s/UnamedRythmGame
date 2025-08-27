@@ -79,3 +79,4 @@ canMove = true;
 impactX = 0;
 impactY = 0;
 impactDecay = 0.85;
+alarm[0] = 60;

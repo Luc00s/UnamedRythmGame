@@ -1,0 +1,1 @@
+start_dialogue("nigga balls",0.5,20,1)
