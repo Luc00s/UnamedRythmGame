@@ -7,8 +7,8 @@
 /// @param {real} speed - Caracteres por step (padrão: 0.5)
 /// @param {real} punctuation_pause - Steps para pausar na pontuação (padrão: 30)
 /// @param {real} emotion - Indicador de emoção (0 = nenhuma, 1 = pergunta)
-/// @param {real} character - ID do personagem falando (padrão: 0)
-function start_dialogue(text, speed = 0.5, punctuation_pause = 30, emotion = 0, character = 0) {
+/// @param {string} character - Nome do personagem falando (padrão: "")
+function start_dialogue(text, speed = 0.5, punctuation_pause = 30, emotion = 0, character = "") {
     // Garante que o DialogManager existe na room
     var dialog_manager = instance_find(DialogManager, 0);
     if (dialog_manager == noone) {
@@ -35,6 +35,8 @@ function start_dialogue(text, speed = 0.5, punctuation_pause = 30, emotion = 0, 
         dialog_emotion = emotion;
         dialog_character = character;
         
+        FMODManager.start_fmod_dialogue(text,1,"violet");
+        
         // Reseta contadores
         dialog_speed_counter = 0;
         dialog_punctuation_counter = 0;
@@ -50,6 +52,8 @@ function stop_dialogue() {
         with (dialog_manager) {
             dialog_active = false;
             dialog_finished = false;
+            
+            interrupt_speech();
         }
     }
 }
@@ -93,14 +97,14 @@ function skip_dialogue() {
 }
 
 /// @function get_current_character()
-/// @description Retorna o ID do personagem que está falando atualmente
-/// @return {real} O ID do personagem (0 se não houver diálogo ou DialogManager não existir)
+/// @description Retorna o nome do personagem que está falando atualmente
+/// @return {string} O nome do personagem ("" se não houver diálogo ou DialogManager não existir)
 function get_current_character() {
     var dialog_manager = instance_find(DialogManager, 0);
     if (dialog_manager != noone) {
         return dialog_manager.dialog_character;
     }
-    return 0;
+    return "";
 }
 
 /// @function set_dialogue_style(x, y, width, height, bg_color, text_color, bg_alpha)

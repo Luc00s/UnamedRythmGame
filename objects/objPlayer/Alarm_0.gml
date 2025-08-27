@@ -1,1 +1,1 @@
-start_dialogue("nigga balls",0.5,20,1)
+start_dialogue("Hi guys. My name is rogerio guedes, i have 2 year old and sold my wife for internet connection. Pls give me money",0.5,20,1,"violet")

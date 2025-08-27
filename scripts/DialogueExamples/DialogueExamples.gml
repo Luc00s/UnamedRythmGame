@@ -28,9 +28,9 @@ function example_question_dialogue() {
 /// @function example_character_dialogue()
 /// @description Mostra diálogo com diferentes personagens falando
 function example_character_dialogue() {
-    start_dialogue("Olá, eu sou o personagem 1!", 0.5, 30, 0, 1); // character = 1
+    start_dialogue("Olá, eu sou a Violet!", 0.5, 30, 0, "violet"); // character = "violet"
     // Mais tarde no seu código, você poderia ter:
-    // start_dialogue("E eu sou o personagem 2!", 0.5, 30, 0, 2); // character = 2
+    // start_dialogue("E eu sou outro personagem!", 0.5, 30, 0, "outro"); // character = "outro"
 }
 
 /// @function example_punctuation_dialogue()
@@ -45,4 +45,17 @@ function example_custom_style() {
     // Define estilo personalizado da caixa de diálogo (centralizada, caixa menor)
     set_dialogue_style(room_width/2 - 200, room_height/2 - 50, 400, 100, c_blue, c_yellow, 0.9);
     start_dialogue("Este diálogo tem um estilo personalizado!");
+}
+
+/// @function example_fmod_dialogue()
+/// @description Mostra como usar o sistema FMOD com diferentes personagens e emoções
+function example_fmod_dialogue() {
+    // Violet falando com emoção neutra
+    start_dialogue("Olá! Sou a Violet e estou falando normalmente.", 0.5, 30, 0, "violet");
+    
+    // Violet fazendo uma pergunta (emoção 1)
+    // start_dialogue("Você consegue ouvir a diferença na minha voz?", 0.5, 30, 1, "violet");
+    
+    // Outro personagem (precisa ter o evento FMOD configurado)
+    // start_dialogue("E eu sou outro personagem com voz diferente!", 0.5, 30, 0, "outro_personagem");
 }

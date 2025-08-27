@@ -21,7 +21,12 @@ dialog_paused_at_punctuation = false;
 dialog_emotion = 0; // Emoção atual (0 = nenhuma, 1 = pergunta)
 
 // Sistema de personagem
-dialog_character = 0; // Personagem atual falando (padrão: 0)
+dialog_character = ""; // Personagem atual falando (padrão: vazio)
+
+// Sistema FMOD
+event_description_ref = -1;
+event_description_instance_ref = -1;
+fmod_initialized = false;
 
 // Aparência da caixa de diálogo
 dialog_x = 50;
