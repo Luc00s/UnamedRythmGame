@@ -89,6 +89,7 @@
     {"id":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
     {"id":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"id":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
+    {"id":{"name":"RoomGame2","path":"rooms/RoomGame2/RoomGame2.yy",},},
     {"id":{"name":"collision","path":"scripts/collision/collision.yy",},},
     {"id":{"name":"DialogueSystem","path":"scripts/DialogueSystem/DialogueSystem.yy",},},
     {"id":{"name":"ExtBufferIO","path":"scripts/ExtBufferIO/ExtBufferIO.yy",},},
@@ -171,6 +172,7 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
+    {"roomId":{"name":"RoomGame2","path":"rooms/RoomGame2/RoomGame2.yy",},},
     {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
     {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
   ],

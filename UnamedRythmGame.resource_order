@@ -54,6 +54,7 @@
     {"name":"parReflection","order":1,"path":"objects/parReflection/parReflection.yy",},
     {"name":"RoomEditor","order":2,"path":"rooms/RoomEditor/RoomEditor.yy",},
     {"name":"RoomGame","order":1,"path":"rooms/RoomGame/RoomGame.yy",},
+    {"name":"RoomGame2","order":3,"path":"rooms/RoomGame2/RoomGame2.yy",},
     {"name":"collision","order":3,"path":"scripts/collision/collision.yy",},
     {"name":"Fmod_Definitions","order":2,"path":"scripts/Fmod_Definitions/Fmod_Definitions.yy",},
     {"name":"Fmod_Functions","order":3,"path":"scripts/Fmod_Functions/Fmod_Functions.yy",},

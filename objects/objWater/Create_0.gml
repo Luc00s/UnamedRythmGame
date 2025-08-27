@@ -1,4 +1,5 @@
-
+x = x-8
+y = y-8
 
 
 waterSurface = -1;
