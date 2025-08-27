@@ -7,7 +7,7 @@
   "overriddenProperties":[],
   "parent":{
     "name":"Solid",
-    "path":"folders/Objects/Misc/Solid.yy",
+    "path":"folders/Objects/Other/Misc/Solid.yy",
   },
   "parentObjectId":{
     "name":"parSolid",
