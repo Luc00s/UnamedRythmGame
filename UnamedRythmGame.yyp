@@ -58,6 +58,8 @@
   "IncludedFiles":[
     {"$GMIncludedFile":"","%Name":"Master.bank","CopyToMask":-1,"filePath":"datafiles","name":"Master.bank","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
     {"$GMIncludedFile":"","%Name":"Master.strings.bank","CopyToMask":-1,"filePath":"datafiles","name":"Master.strings.bank","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"OST.bank","CopyToMask":-1,"filePath":"datafiles","name":"OST.bank","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
+    {"$GMIncludedFile":"","%Name":"SFX.bank","CopyToMask":-1,"filePath":"datafiles","name":"SFX.bank","resourceType":"GMIncludedFile","resourceVersion":"2.0",},
   ],
   "isEcma":false,
   "LibraryEmitters":[],
@@ -111,6 +113,7 @@
     {"id":{"name":"OstCircusSky","path":"sounds/OstCircusSky/OstCircusSky.yy",},},
     {"id":{"name":"OstFabi","path":"sounds/OstFabi/OstFabi.yy",},},
     {"id":{"name":"OstFinalStrat","path":"sounds/OstFinalStrat/OstFinalStrat.yy",},},
+    {"id":{"name":"OstForest","path":"sounds/OstForest/OstForest.yy",},},
     {"id":{"name":"OstFriendInsideDeltarune","path":"sounds/OstFriendInsideDeltarune/OstFriendInsideDeltarune.yy",},},
     {"id":{"name":"OstJeba","path":"sounds/OstJeba/OstJeba.yy",},},
     {"id":{"name":"OstMagenta","path":"sounds/OstMagenta/OstMagenta.yy",},},
@@ -170,9 +173,9 @@
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"roomId":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
     {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
+    {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

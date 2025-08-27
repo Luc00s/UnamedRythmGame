@@ -15,6 +15,8 @@ fmod_main_system = fmod_studio_system_get_core_system();
 
 bank_ref = fmod_studio_system_load_bank_file(fmod_path_bundle("Master.bank"), FMOD_STUDIO_LOAD_BANK.NORMAL);
 strings_bank_ref = fmod_studio_system_load_bank_file(fmod_path_bundle("Master.strings.bank"), FMOD_STUDIO_LOAD_BANK.NORMAL);
+bank_ref_sfx = fmod_studio_system_load_bank_file(fmod_path_bundle("SFX.bank"), FMOD_STUDIO_LOAD_BANK.NORMAL);
+bank_ref_music = fmod_studio_system_load_bank_file(fmod_path_bundle("OST.bank"), FMOD_STUDIO_LOAD_BANK.NORMAL);
 
 // CHARACTERS
 event_description_ref = fmod_studio_system_get_event("event:/voices/violet/violet");

@@ -1,3 +1,4 @@
+
 //Debug
 depth = -9999;
 
@@ -19,7 +20,6 @@ global.data = {
         fullscreen : false,
     },
     
-    //Volume
     volume : {
         master : 100,
         music : 100,
@@ -37,16 +37,24 @@ display_set_gui_size(global.data.screen.width, global.data.screen.height);
 //Ajustando o cursor
 //window_set_cursor(cr_none);
 
-//Musica
+//FMOD Music System
 global.newMusic = {
-    song : noone,
+    event : "event:/OST/forest", 
     intro : false,
 }
+
 global.music = {
-    song : noone,
+    event : "",
     intro : false,
+    instance : undefined 
 }
+
 musicGain = 0;
+musicTransitioning = false;
+
+
+global.musicVCA = fmod_studio_system_get_vca("vca:/Music");
+global.masterVCA = fmod_studio_system_get_vca("vca:/Master");
 
 //Pause
 global.pause = false;
