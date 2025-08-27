@@ -1,0 +1,51 @@
+normalSpd = 0.5;
+spd = normalSpd;
+
+defaultBlinkTimer = [room_speed/2, room_speed*6];
+blinkTimer = irandom_range(defaultBlinkTimer[0], defaultBlinkTimer[1]);
+
+drawX = x;
+drawY = y;
+spriteCatchupFactor = 0.25;
+
+character = "Player";
+spriteAction = "";
+
+againstWall = {hori: 0, vert: 0};
+
+hsp = 0;
+vsp = 0;
+
+xSpeedLeft = 0;
+ySpeedLeft = 0;
+
+cornerSlip = 8;
+cornerSlipSpeedFactor = 0.5;
+
+spriteDir = 270;
+dir = 270;
+
+footstepSound = false;
+
+depth = -bbox_bottom;
+
+originalX = x;
+originalY = y;
+maxWanderDistance = 64;
+
+wanderTimer = 0;
+wanderDelay = irandom_range(60, 180);
+wanderDuration = irandom_range(30, 120);
+isWandering = false;
+
+targetDir = 270;
+
+visionRange = 80;
+visionAngle = 60;
+debugVision = true;
+playerDetected = false;
+followerDetected = false;
+detectedTargets = [];
+rayCount = 8;
+raycastResults = [];
+maxRayDistance = 120;
