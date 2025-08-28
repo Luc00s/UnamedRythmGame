@@ -101,6 +101,7 @@
     {"id":{"name":"GameScripts","path":"scripts/GameScripts/GameScripts.yy",},},
     {"id":{"name":"SaveLoadScripts","path":"scripts/SaveLoadScripts/SaveLoadScripts.yy",},},
     {"id":{"name":"setMusic","path":"scripts/setMusic/setMusic.yy",},},
+    {"id":{"name":"start_transition","path":"scripts/start_transition/start_transition.yy",},},
     {"id":{"name":"systemScripts","path":"scripts/systemScripts/systemScripts.yy",},},
     {"id":{"name":"sh_outline","path":"shaders/sh_outline/sh_outline.yy",},},
     {"id":{"name":"sh_reflection","path":"shaders/sh_reflection/sh_reflection.yy",},},

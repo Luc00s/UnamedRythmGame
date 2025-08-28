@@ -61,6 +61,7 @@
     {"name":"Fmod_Functions","order":3,"path":"scripts/Fmod_Functions/Fmod_Functions.yy",},
     {"name":"GameScripts","order":1,"path":"scripts/GameScripts/GameScripts.yy",},
     {"name":"setMusic","order":2,"path":"scripts/setMusic/setMusic.yy",},
+    {"name":"start_transition","order":4,"path":"scripts/start_transition/start_transition.yy",},
     {"name":"sh_outline","order":6,"path":"shaders/sh_outline/sh_outline.yy",},
     {"name":"sh_reflection","order":4,"path":"shaders/sh_reflection/sh_reflection.yy",},
     {"name":"sh_spin","order":2,"path":"shaders/sh_spin/sh_spin.yy",},
