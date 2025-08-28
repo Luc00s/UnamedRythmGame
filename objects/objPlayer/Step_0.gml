@@ -123,11 +123,11 @@ if (jumpState == "waiting") {
         else spriteAction = "Walk";
         
         if(image_index > 1 and image_index <= 2) {
-            if(footstepSound = false) audio_play_sound(sndFootstep0, 0, false);
+            if(footstepSound = false) fmod_studio_event_instance_start(footsteps);
             footstepSound = true;
         }
         else if(image_index > 3 and image_index < 4) {
-            if(footstepSound = false) audio_play_sound(sndFootstep1, 0, false);
+            if(footstepSound = false) fmod_studio_event_instance_start(footsteps);
             footstepSound = true;
         }
         else footstepSound = false;
