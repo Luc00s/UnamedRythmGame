@@ -79,4 +79,8 @@ canMove = true;
 impactX = 0;
 impactY = 0;
 impactDecay = 0.85;
+
+event_description_ref = fmod_studio_system_get_event("event:/sfx/footsteps");
+footsteps = fmod_studio_event_description_create_instance(event_description_ref);
+
 alarm[0] = 60;
