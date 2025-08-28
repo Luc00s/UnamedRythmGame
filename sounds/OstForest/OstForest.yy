@@ -1,6 +1,6 @@
 {
   "$GMSound":"",
-  "%Name":"OstSpongeBob",
+  "%Name":"OstForest",
   "audioGroupId":{
     "name":"audiogroup_default",
     "path":"audiogroups/audiogroup_default",
@@ -9,8 +9,8 @@
   "bitRate":128,
   "compression":0,
   "conversionMode":0,
-  "duration":0.0,
-  "name":"OstSpongeBob",
+  "duration":62.354286,
+  "name":"OstForest",
   "parent":{
     "name":"Music",
     "path":"folders/Sounds/Music.yy",
@@ -19,7 +19,7 @@
   "resourceType":"GMSound",
   "resourceVersion":"2.0",
   "sampleRate":44100,
-  "soundFile":"OstSpongeBob.mp3",
+  "soundFile":"OstForest.mp3",
   "type":0,
   "volume":1.0,
 }

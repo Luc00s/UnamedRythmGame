@@ -73,6 +73,7 @@
     {"name":"OstArt","order":2,"path":"sounds/OstArt/OstArt.yy",},
     {"name":"OstCircusSky","order":5,"path":"sounds/OstCircusSky/OstCircusSky.yy",},
     {"name":"OstFinalStrat","order":6,"path":"sounds/OstFinalStrat/OstFinalStrat.yy",},
+    {"name":"OstForest","order":11,"path":"sounds/OstForest/OstForest.yy",},
     {"name":"OstFriendInsideDeltarune","order":1,"path":"sounds/OstFriendInsideDeltarune/OstFriendInsideDeltarune.yy",},
     {"name":"OstJeba","order":9,"path":"sounds/OstJeba/OstJeba.yy",},
     {"name":"OstMagenta","order":8,"path":"sounds/OstMagenta/OstMagenta.yy",},
