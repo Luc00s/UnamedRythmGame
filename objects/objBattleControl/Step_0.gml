@@ -22,6 +22,34 @@ if(keyboard_check_pressed(ord("4"))) {
     battleBoxActive = false;
 }
 
+// Test HP counter functionality with keyboard shortcuts
+if(keyboard_check_pressed(ord("Q"))) {
+    damagePlayer("violet", 10); // Q to damage Violet by 10
+}
+if(keyboard_check_pressed(ord("A"))) {
+    healPlayer("violet", 10); // A to heal Violet by 10
+}
+if(keyboard_check_pressed(ord("W"))) {
+    damagePlayer("red", 15); // W to damage Red by 15
+}
+if(keyboard_check_pressed(ord("S"))) {
+    healPlayer("red", 15); // S to heal Red by 15
+}
+
+// Test Mana counter functionality with keyboard shortcuts
+if(keyboard_check_pressed(ord("E"))) {
+    useMana("violet", 5); // E to use 5 mana for Violet
+}
+if(keyboard_check_pressed(ord("D"))) {
+    restoreMana("violet", 5); // D to restore 5 mana for Violet
+}
+if(keyboard_check_pressed(ord("R"))) {
+    useMana("red", 8); // R to use 8 mana for Red
+}
+if(keyboard_check_pressed(ord("F"))) {
+    restoreMana("red", 8); // F to restore 8 mana for Red
+}
+
 if(keyboard_check_pressed(vk_space)) {
     if(!battleBoxActive) {
         battleBoxActive = true;
@@ -48,6 +76,7 @@ if(keyboard_check_pressed(vk_space)) {
                 y: startY,
                 startY: startY,
                 targetY: targetY,
+                textboxY: startY,
                 velocity: 0,
                 animationDelay: i * 8,
                 hasStarted: false,
@@ -115,11 +144,17 @@ if(keyboard_check_pressed(vk_space)) {
             if(movingUp) {
                 box.animationDelay = i * 8;
                 box.targetY = room_height - 58;
+                if (!variable_struct_exists(box, "textboxY")) {
+                    box.textboxY = box.y;
+                }
                 topBarTargetY = 0;
                 bottomBarTargetY = room_height + 48;
             } else {
                 box.animationDelay = (array_length(battleBoxes) - 1 - i) * 8;
                 box.targetY = room_height + 50;
+                if (!variable_struct_exists(box, "textboxY")) {
+                    box.textboxY = box.y;
+                }
                 topBarTargetY = -35;
                 bottomBarTargetY = room_height + 96;
                 box.hasBeenHit = false;
@@ -135,6 +170,13 @@ if(keyboard_check_pressed(vk_space)) {
 
 if(battleBoxActive) {
     animationTimer++;
+    
+    // Update HP and Mana counters for all players
+    var playerNames = ["violet", "red", "robot", "gang"];
+    for (var p = 0; p < array_length(playerNames); p++) {
+        updateHPCounter(playerNames[p]);
+        updateManaCounter(playerNames[p]);
+    }
     
     // Verifica aterrissagens e efeitos de impacto
     var characterList = [];
@@ -179,6 +221,11 @@ if(battleBoxActive) {
             box.velocity += force;
             box.velocity *= box.damping;
             box.y += box.velocity;
+            
+            if (!variable_struct_exists(box, "textboxY")) {
+                box.textboxY = box.y;
+            }
+            box.textboxY = lerp(box.textboxY, box.y, 0.25);
             
             if(i < array_length(characterList) && !box.hasBeenHit) {
                 var character = characterList[i];

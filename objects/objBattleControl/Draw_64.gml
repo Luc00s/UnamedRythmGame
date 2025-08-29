@@ -17,12 +17,12 @@ if(battleBoxActive) {
                 var drawY = boxDrawY + 4 + (tileY * 32) + textureScrollY;
                 
                 if(drawX + 32 > box.x + 4 && drawY + 32 > boxDrawY + 4 && 
-                   drawX < box.x + 64 && drawY < boxDrawY + 28) {
+                   drawX < box.x + 56 && drawY < boxDrawY + 31) {
                     
                     var clipLeft = max(0, (box.x + 4) - drawX);
                     var clipTop = max(0, (boxDrawY + 4) - drawY);
-                    var clipRight = max(0, (drawX + 32) - (box.x + 64));
-                    var clipBottom = max(0, (drawY + 32) - (boxDrawY + 28));
+                    var clipRight = max(0, (drawX + 32) - (box.x + 56));
+                    var clipBottom = max(0, (drawY + 32) - (boxDrawY + 31));
                     
                     var clipWidth = 32 - clipLeft - clipRight;
                     var clipHeight = 32 - clipTop - clipBottom;
@@ -35,7 +35,7 @@ if(battleBoxActive) {
             }
         }
         
-        draw_sprite(sprBattleBox, 0, box.x, boxDrawY);
+        draw_sprite(sprBattleBox, i, box.x, boxDrawY);
         
         var playerNames = ["violet", "red", "robot", "gang"];
         if (i < array_length(playerNames)) {
@@ -49,21 +49,23 @@ if(battleBoxActive) {
                 var textHeight = string_height(characterName);
 
                 var nameBoxWidth = textWidth + 8;
-                var nameBoxHeight = textHeight;
-                var nameBoxCenterX = box.x + 34;
-                var nameBoxCenterY = boxDrawY;
-                var nameBoxX = nameBoxCenterX - (nameBoxWidth / 2);
-                var nameBoxY = nameBoxCenterY - (nameBoxHeight / 2);
+                var nameBoxHeight = 16;
+                var nameBoxCenterX = floor(box.x) + 30;
+                var smoothHitOffset = abs(box.impactOffset) > 2 ? floor(box.impactOffset * 0.5) : 0;
+                var textboxYPos = variable_struct_exists(box, "textboxY") ? box.textboxY : box.y;
+                var nameBoxCenterY = textboxYPos + smoothHitOffset + 4;
+                var nameBoxX = floor(nameBoxCenterX - (nameBoxWidth / 2));
+                var nameBoxY = round(nameBoxCenterY - (nameBoxHeight / 2));
                 
                 var scaleX = nameBoxWidth / sprite_get_width(sprBattleNameBox);
                 var scaleY = nameBoxHeight / sprite_get_height(sprBattleNameBox);
-                draw_sprite_ext(sprBattleNameBox, 0, nameBoxX, nameBoxY, scaleX, scaleY, 0, c_white, 1);
+                draw_sprite_ext(sprBattleNameBox, i, nameBoxX, nameBoxY, scaleX, scaleY, 0, c_white, 1);
                 
                 // Draw character name
                 draw_set_color(c_white);
                 draw_set_halign(fa_center);
                 draw_set_valign(fa_middle);
-                draw_text(nameBoxCenterX, nameBoxCenterY - 1, characterName);
+                draw_text(nameBoxCenterX, nameBoxCenterY - 2, characterName);
                 
                 if (array_length(player.status) > 0) {
                     var statusText = "";
@@ -76,6 +78,18 @@ if(battleBoxActive) {
                     draw_set_valign(fa_top);
                     draw_text(box.x + 5, boxDrawY + 30, statusText);
                 }
+                
+                // Draw HP counter
+                var hpCounterX = box.x + 21;
+                var hpCounterY = boxDrawY + 15;
+                var hpColorRow = i * 3; // Colors: 0, 3, 6, 9
+                drawHPCounter(playerName, hpCounterX, hpCounterY, hpColorRow);
+                
+                // Draw Mana counter (6 pixels below, 5 pixels to the right)
+                var manaCounterX = hpCounterX + 5;
+                var manaCounterY = hpCounterY + 6;
+                var manaColorRow = 1 + (i * 3); // Colors: 1, 4, 7, 10
+                drawManaCounter(playerName, manaCounterX, manaCounterY, manaColorRow, hpColorRow);
                 
                 // Reset text properties
                 draw_set_color(c_white);
