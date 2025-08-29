@@ -31,6 +31,11 @@ fmod_studio_event_instance_start(violet);
 
 // TOGGLE SPEECH = fmod_studio_event_instance_set_parameter_by_name(event_description_instance_ref, "SHOULD_SPEAK", 1); (1 or 0)
 
+// EMOTIONS
+// 1 = QUESTION
+// 2 = HAPPY
+// 3 = SAD
+// 4 = ANGRY
 
 start_fmod_dialogue = function (text, emotion, character){
 	

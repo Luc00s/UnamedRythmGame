@@ -35,7 +35,7 @@ function start_dialogue(text, speed = 0.5, punctuation_pause = 30, emotion = 0, 
         dialog_emotion = emotion;
         dialog_character = character;
         
-        FMODManager.start_fmod_dialogue(text,1,"violet");
+        FMODManager.start_fmod_dialogue(text,emotion,"violet");
         
         // Reseta contadores
         dialog_speed_counter = 0;
