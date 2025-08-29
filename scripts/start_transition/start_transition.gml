@@ -1,6 +1,6 @@
 // Function to start transition
 function start_transition(next_room) {
-	if !instance_exists(ObjTransition) instance_create_depth(0,0,-9999,ObjTransition)
+	if !instance_exists(ObjTransition) instance_create_depth(0,0,-9998,ObjTransition)
 	else exit;
 	
 	with(ObjTransition)

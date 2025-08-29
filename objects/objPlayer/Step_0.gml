@@ -201,6 +201,6 @@ if (jumpState == "none") {
 // Handle T key press to start transition
 if (keyboard_check_pressed(ord("T"))) {
     // Determine next room (cycle between Room1 and Room2)
-    var next_room = (room == RoomGame) ? RoomGame2 : RoomGame;
+    var next_room = (room == RoomGame) ? RoomBattle : RoomGame;
     start_transition(next_room);
 }

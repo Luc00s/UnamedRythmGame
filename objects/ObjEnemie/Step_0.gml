@@ -346,6 +346,8 @@ if (hasCaughtPlayer) {
         if (instance_exists(objBattleControl)) {
             with (objBattleControl) {
                 if(!battleBoxActive) {
+                    previousRoom = room;
+                    start_transition(RoomBattle);
                     battleBoxActive = true;
                     animationTimer = 0;
                     movingUp = true;

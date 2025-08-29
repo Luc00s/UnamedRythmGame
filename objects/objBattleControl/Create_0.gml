@@ -3,6 +3,10 @@ battleBoxActive = false;
 battleBoxCount = 1;
 battleExitTimer = 0;
 battleExitTimeout = 300;
+previousRoom = -1;
+
+// Ensure battle GUI renders on top of transitions
+depth = -10000;
 
 // Rolling counter configuration for HP display
 hpCounterConfig = {

@@ -52,6 +52,8 @@ if(keyboard_check_pressed(ord("F"))) {
 
 if(keyboard_check_pressed(vk_space)) {
     if(!battleBoxActive) {
+        previousRoom = room;
+        start_transition(RoomBattle);
         battleBoxActive = true;
         animationTimer = 0;
         movingUp = true;
@@ -67,7 +69,7 @@ if(keyboard_check_pressed(vk_space)) {
         var spacing = remainingSpace / (battleBoxCount + 1);
         
         for(var i = 0; i < battleBoxCount; i++) {
-            var boxX = spacing + (i * (boxWidth + spacing));
+            var boxX = round(spacing + (i * (boxWidth + spacing)));
             var startY = room_height + 50;
             var targetY = room_height - 58;
             
@@ -114,8 +116,8 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpOriginalSprite = sprite_index;
                 jumpStartX = x;
                 jumpStartY = y;
-                jumpTargetX = other.battleBoxes[i].x + 34;
-                jumpTargetY = other.battleBoxes[i].targetY + 24;
+                jumpTargetX = round(other.battleBoxes[i].x + 34);
+                jumpTargetY = round(other.battleBoxes[i].targetY + 24);
                 jumpProgress = 0;
                 jumpDelay = i * 8;
                 jumpDelayTimer = 0;
@@ -123,9 +125,9 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpPrepDuration = 30;
                 jumpIsExiting = false;
                 
-                var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
-                jumpDuration = max(60, min(100, jumpDistance * 0.35));
-                jumpMaxHeight = max(80, jumpDistance * 0.5);
+                // Use fixed jump parameters to prevent jittering
+                jumpDuration = 80;
+                jumpMaxHeight = 100;
                 
                 battleBoxIndex = i;
                 
@@ -135,6 +137,11 @@ if(keyboard_check_pressed(vk_space)) {
         movingUp = !movingUp;
         animationTimer = 0;
         
+        // Start room transition immediately when exit animation begins
+        if (!movingUp && previousRoom != -1) {
+            start_transition(previousRoom);
+            previousRoom = -1;
+        }
         
         for(var i = 0; i < array_length(battleBoxes); i++) {
             var box = battleBoxes[i];
@@ -168,6 +175,32 @@ if(keyboard_check_pressed(vk_space)) {
     }
 }
 
+if(keyboard_check_pressed(vk_escape) && battleBoxActive) {
+    battleBoxActive = false;
+    battleBoxes = [];
+    movingUp = true;
+    
+    // Force all characters to reset their states immediately
+    if (instance_exists(objPlayer)) {
+        with (objPlayer) {
+            jumpState = "none";
+            battleBoxIndex = -1;
+            canMove = true;
+        }
+    }
+    
+    with (ObjFollower) {
+        jumpState = "none";
+        battleBoxIndex = -1;
+        canMove = true;
+    }
+    
+    if (previousRoom != -1) {
+        start_transition(previousRoom);
+        previousRoom = -1;
+    }
+}
+
 if(battleBoxActive) {
     animationTimer++;
     
@@ -196,10 +229,11 @@ if(battleBoxActive) {
             box.hasStarted = true;
             
             if (!movingUp && i < array_length(characterList)) {
+                // Make the specific character jump when their box starts exiting
                 var character = characterList[i];
                 with (character.inst) {
                     if (jumpState == "landed" && battleBoxIndex == i) {
-                        jumpState = "jumping"; // Jump instantly when box starts exiting
+                        jumpState = "jumping"; // Jump when this specific box starts exiting
                         jumpStartX = x;
                         jumpStartY = y;
                         jumpTargetX = jumpOriginalX;
@@ -207,9 +241,9 @@ if(battleBoxActive) {
                         jumpProgress = 0;
                         jumpIsExiting = true;
                         
-                        var jumpDistance = point_distance(jumpStartX, jumpStartY, jumpTargetX, jumpTargetY);
-                        jumpDuration = max(60, min(100, jumpDistance * 0.35));
-                        jumpMaxHeight = max(80, jumpDistance * 0.5);
+                        // Use fixed jump parameters to prevent jittering
+                        jumpDuration = 80;
+                        jumpMaxHeight = 100;
                     }
                 }
             }
@@ -227,14 +261,34 @@ if(battleBoxActive) {
             }
             box.textboxY = lerp(box.textboxY, box.y, 0.25);
             
-            if(i < array_length(characterList) && !box.hasBeenHit) {
-                var character = characterList[i];
-                with (character.inst) {
-                    if (jumpState == "landed" && battleBoxIndex == i) {
-                        other.battleBoxes[i].impactOffset = 15;
-                        other.battleBoxes[i].impactVelocity = 0;
-                        other.battleBoxes[i].hasBeenHit = true;
+            // Check for character impacts and apply effects
+            if (!box.hasBeenHit) {
+                var foundLandedCharacter = false;
+                
+                // Check if any character has landed in this box
+                if (instance_exists(objPlayer)) {
+                    with (objPlayer) {
+                        if (jumpState == "landed" && battleBoxIndex == i) {
+                            foundLandedCharacter = true;
+                            
+                            // No character knockback to prevent jittering
+                        }
                     }
+                }
+                
+                with (ObjFollower) {
+                    if (jumpState == "landed" && battleBoxIndex == i) {
+                        foundLandedCharacter = true;
+                        
+                        // No character knockback to prevent jittering
+                    }
+                }
+                
+                // Apply stronger box impact if any character landed (no screen shake)
+                if (foundLandedCharacter) {
+                    other.battleBoxes[i].impactOffset = 12;
+                    other.battleBoxes[i].impactVelocity = 0;
+                    other.battleBoxes[i].hasBeenHit = true;
                 }
             }
             
@@ -255,6 +309,8 @@ if(battleBoxActive) {
     
     // Verifica saída do modo batalha
     if (!movingUp) {
+        battleExitTimer++;
+        
         var allBoxesGone = true;
         for (var i = 0; i < array_length(battleBoxes); i++) {
             if (battleBoxes[i].y < room_height + 100) {
@@ -266,39 +322,42 @@ if(battleBoxActive) {
         var allCharactersReturned = true;
         if (instance_exists(objPlayer)) {
             with (objPlayer) {
-                if (jumpState == "landed" || jumpState == "jumping") {
+                if (battleBoxIndex != -1) {
                     allCharactersReturned = false;
                 }
             }
         }
         
         with (ObjFollower) {
-            if (jumpState == "landed" || jumpState == "jumping") {
+            if (battleBoxIndex != -1) {
                 allCharactersReturned = false;
             }
         }
         
-        if (allBoxesGone || allCharactersReturned) {
+        // Exit battle if boxes are gone, characters returned, or timeout reached
+        if (allBoxesGone || allCharactersReturned || battleExitTimer >= battleExitTimeout) {
             battleBoxActive = false;
             battleBoxes = [];
             movingUp = true;
+            battleExitTimer = 0;
             
+            // Force all characters to reset their states
             if (instance_exists(objPlayer)) {
                 with (objPlayer) {
-                    if (jumpState != "none" && jumpState != "jumping") {
-                        jumpState = "none";
-                        battleBoxIndex = -1;
-                    }
+                    jumpState = "none";
+                    battleBoxIndex = -1;
+                    canMove = true;
                 }
             }
             
             with (ObjFollower) {
-                if (jumpState != "none" && jumpState != "jumping") {
-                    jumpState = "none";
-                    battleBoxIndex = -1;
-                }
+                jumpState = "none";
+                battleBoxIndex = -1;
+                canMove = true;
             }
         }
+    } else {
+        battleExitTimer = 0;
     }
 }
 
