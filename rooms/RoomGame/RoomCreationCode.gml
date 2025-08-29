@@ -1,1 +1,0 @@
-//setMusic(OstFriendInsideDeltarune);

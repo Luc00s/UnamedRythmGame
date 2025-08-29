@@ -2,9 +2,9 @@
   "$GMSprite":"",
   "%Name":"sprBattleBox",
   "bboxMode":0,
-  "bbox_bottom":31,
+  "bbox_bottom":34,
   "bbox_left":0,
-  "bbox_right":67,
+  "bbox_right":59,
   "bbox_top":0,
   "collisionKind":1,
   "collisionTolerance":0,
@@ -13,10 +13,13 @@
   "For3D":false,
   "frames":[
     {"$GMSpriteFrame":"","%Name":"593ca67a-74d7-4fb4-aea7-8b761c27da2d","name":"593ca67a-74d7-4fb4-aea7-8b761c27da2d","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"","%Name":"bee0163f-5597-466a-bcbc-c605756c897a","name":"bee0163f-5597-466a-bcbc-c605756c897a","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"","%Name":"0b7d68db-802b-469c-8f3b-1fe13cf728b3","name":"0b7d68db-802b-469c-8f3b-1fe13cf728b3","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
+    {"$GMSpriteFrame":"","%Name":"d5ff4431-09c3-4646-9de8-735061baf3ca","name":"d5ff4431-09c3-4646-9de8-735061baf3ca","resourceType":"GMSpriteFrame","resourceVersion":"2.0",},
   ],
   "gridX":0,
   "gridY":0,
-  "height":32,
+  "height":35,
   "HTile":false,
   "layers":[
     {"$GMImageLayer":"","%Name":"397515ff-d96e-483a-98bd-c3eb10811d89","blendMode":0,"displayName":"default","isLocked":false,"name":"397515ff-d96e-483a-98bd-c3eb10811d89","opacity":100.0,"resourceType":"GMImageLayer","resourceVersion":"2.0","visible":true,},
@@ -49,7 +52,7 @@
     },
     "eventStubScript":null,
     "eventToFunction":{},
-    "length":1.0,
+    "length":4.0,
     "lockOrigin":false,
     "moments":{
       "$KeyframeStore<MomentsEventKeyframe>":"",
@@ -63,8 +66,8 @@
     "playbackSpeedType":0,
     "resourceType":"GMSequence",
     "resourceVersion":"2.0",
-    "seqHeight":32.0,
-    "seqWidth":68.0,
+    "seqHeight":35.0,
+    "seqWidth":60.0,
     "showBackdrop":true,
     "showBackdropImage":false,
     "timeUnits":1,
@@ -73,6 +76,15 @@
             {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
                 "0":{"$SpriteFrameKeyframe":"","Id":{"name":"593ca67a-74d7-4fb4-aea7-8b761c27da2d","path":"sprites/sprBattleBox/sprBattleBox.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
               },"Disabled":false,"id":"ddf2a358-7a65-4b52-8698-dcfb63491437","IsCreationKey":false,"Key":0.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+            {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"bee0163f-5597-466a-bcbc-c605756c897a","path":"sprites/sprBattleBox/sprBattleBox.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"540ed277-fa62-44d6-a253-fadb85482e74","IsCreationKey":false,"Key":1.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+            {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"0b7d68db-802b-469c-8f3b-1fe13cf728b3","path":"sprites/sprBattleBox/sprBattleBox.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"146cf9fe-b98e-498d-9cc4-4e6072d46852","IsCreationKey":false,"Key":2.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
+            {"$Keyframe<SpriteFrameKeyframe>":"","Channels":{
+                "0":{"$SpriteFrameKeyframe":"","Id":{"name":"d5ff4431-09c3-4646-9de8-735061baf3ca","path":"sprites/sprBattleBox/sprBattleBox.yy",},"resourceType":"SpriteFrameKeyframe","resourceVersion":"2.0",},
+              },"Disabled":false,"id":"63ea513f-b952-4a8f-a4f9-b4263521c30c","IsCreationKey":false,"Key":3.0,"Length":1.0,"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"2.0","Stretch":false,},
           ],"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"2.0",},"modifiers":[],"name":"frames","resourceType":"GMSpriteFramesTrack","resourceVersion":"2.0","spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange":null,
@@ -88,5 +100,5 @@
   },
   "type":0,
   "VTile":false,
-  "width":68,
+  "width":60,
 }
