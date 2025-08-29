@@ -83,16 +83,5 @@ if(battleBoxActive) {
                 draw_set_valign(fa_top);
             }
         }
-        
-        var leftScoreX = box.x + 7;
-        var rightScoreX = box.x + 36;
-        var scoreY = boxDrawY + 10;
-        var leftElementX = box.x - 3;
-        var rightElementX = box.x + 61;
-        
-        draw_sprite(sprBattleScore, 0, leftScoreX, scoreY);
-        draw_sprite(sprBattleScore, 1, rightScoreX, scoreY);
-        draw_sprite(sprBattleElement, 0, leftElementX, scoreY - 1);
-        draw_sprite(sprBattleElement, 1, rightElementX, scoreY - 1);
     }
 }
