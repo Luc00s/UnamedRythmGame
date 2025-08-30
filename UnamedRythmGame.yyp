@@ -132,6 +132,8 @@
     {"id":{"name":"sprBattleBlackBar","path":"sprites/sprBattleBlackBar/sprBattleBlackBar.yy",},},
     {"id":{"name":"sprBattleBox","path":"sprites/sprBattleBox/sprBattleBox.yy",},},
     {"id":{"name":"sprBattleBoxBack","path":"sprites/sprBattleBoxBack/sprBattleBoxBack.yy",},},
+    {"id":{"name":"SprBattleButtons","path":"sprites/SprBattleButtons/SprBattleButtons.yy",},},
+    {"id":{"name":"SprBattleButtonsSelected","path":"sprites/SprBattleButtonsSelected/SprBattleButtonsSelected.yy",},},
     {"id":{"name":"sprBattleNameBox","path":"sprites/sprBattleNameBox/sprBattleNameBox.yy",},},
     {"id":{"name":"SprEnemieGnome","path":"sprites/SprEnemieGnome/SprEnemieGnome.yy",},},
     {"id":{"name":"SprGrassTexture","path":"sprites/SprGrassTexture/SprGrassTexture.yy",},},
@@ -181,10 +183,10 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
-    {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
-    {"roomId":{"name":"RoomGame2","path":"rooms/RoomGame2/RoomGame2.yy",},},
     {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"roomId":{"name":"RoomBattle","path":"rooms/RoomBattle/RoomBattle.yy",},},
+    {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
+    {"roomId":{"name":"RoomGame2","path":"rooms/RoomGame2/RoomGame2.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

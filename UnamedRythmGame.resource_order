@@ -88,6 +88,8 @@
     {"name":"SprArrow","order":4,"path":"sprites/SprArrow/SprArrow.yy",},
     {"name":"sprBattleBox","order":1,"path":"sprites/sprBattleBox/sprBattleBox.yy",},
     {"name":"sprBattleBoxBack","order":2,"path":"sprites/sprBattleBoxBack/sprBattleBoxBack.yy",},
+    {"name":"SprBattleButtons","order":6,"path":"sprites/SprBattleButtons/SprBattleButtons.yy",},
+    {"name":"SprBattleButtonsSelected","order":7,"path":"sprites/SprBattleButtonsSelected/SprBattleButtonsSelected.yy",},
     {"name":"sprBattleNameBox","order":5,"path":"sprites/sprBattleNameBox/sprBattleNameBox.yy",},
     {"name":"SprEnemieGnome","order":5,"path":"sprites/SprEnemieGnome/SprEnemieGnome.yy",},
     {"name":"SprGrassTexture","order":9,"path":"sprites/SprGrassTexture/SprGrassTexture.yy",},
