@@ -191,6 +191,34 @@ switch (enemyState) {
                     impactX = lengthdir_x(other.impactForce, impactDir);
                     impactY = lengthdir_y(other.impactForce, impactDir);
                 }
+                
+                // Notify nearby enemies to join the battle
+                var notificationRadius = 120; // Range to notify other enemies
+                show_debug_message("=== Player caught! Notifying nearby enemies ===");
+                show_debug_message("Capture position: " + string(x) + ", " + string(y));
+                show_debug_message("Chase target: " + string(chaseTarget));
+                
+                with (ObjEnemie) {
+                    show_debug_message("Checking enemy " + string(id) + " at " + string(x) + ", " + string(y) + " in state: " + enemyState);
+                    if (id != other.id && enemyState != "caught" && enemyState != "joining_battle") {
+                        var distanceToCapture = point_distance(x, y, other.x, other.y);
+                        show_debug_message("Distance to capture point: " + string(distanceToCapture) + " (radius: " + string(notificationRadius) + ")");
+                        if (distanceToCapture <= notificationRadius) {
+                            show_debug_message("NOTIFYING enemy " + string(id) + " to join battle!");
+                            // Set this enemy to join the battle - target the same character that was caught
+                            enemyState = "joining_battle";
+                            // Target the exact same character that was caught by the first enemy
+                            chaseTarget = other.chaseTarget;
+                            joinBattleTimer = 0;
+                            joinBattleDelay = irandom_range(15, 45); // Random delay to make it look natural
+                            show_debug_message("Enemy " + string(id) + " now chasing target: " + string(chaseTarget));
+                        } else {
+                            show_debug_message("Enemy " + string(id) + " too far away");
+                        }
+                    } else {
+                        show_debug_message("Enemy " + string(id) + " skipped (same enemy, already caught, or already joining)");
+                    }
+                }
             }
             
             if (hasCaughtPlayer || anyCharacterJumping) {
@@ -272,6 +300,108 @@ switch (enemyState) {
         moveX = 0;
         moveY = 0;
         spd = 0;
+        break;
+        
+    case "joining_battle":
+        joinBattleTimer++;
+        show_debug_message("Enemy " + string(id) + " in joining_battle state. Timer: " + string(joinBattleTimer) + "/" + string(joinBattleDelay));
+        
+        if (joinBattleTimer >= joinBattleDelay && instance_exists(chaseTarget)) {
+            show_debug_message("Enemy " + string(id) + " starting to move towards target!");
+            // Chase towards the player but don't cause knockback
+            var desiredDir = point_direction(x, y, chaseTarget.x, chaseTarget.y);
+            var finalDir = desiredDir;
+            var bestScore = -1;
+            var bestAngle = desiredDir;
+            
+            for (var i = 0; i < avoidanceRays; i++) {
+                var testAngle = desiredDir + (i - floor(avoidanceRays/2)) * 30;
+                var rayScore = 0;
+                var blocked = false;
+                
+                for (var dist = 8; dist <= avoidanceRange; dist += 4) {
+                    var testX = x + lengthdir_x(dist, testAngle);
+                    var testY = y + lengthdir_y(dist, testAngle);
+                    
+                    if (place_meeting(testX, testY, parSolid)) {
+                        blocked = true;
+                        break;
+                    }
+                    rayScore += 1;
+                }
+                
+                if (!blocked) {
+                    rayScore += 10;
+                }
+                
+                var angleWeight = 1 - (abs(angle_difference(testAngle, desiredDir)) / 180);
+                rayScore *= angleWeight;
+                
+                if (rayScore > bestScore) {
+                    bestScore = rayScore;
+                    bestAngle = testAngle;
+                }
+            }
+            
+            var distanceToTarget = point_distance(x, y, chaseTarget.x, chaseTarget.y);
+            
+            // Check if close enough to "join" the battle (allow joining even during battle transition)
+            var canJoinBattle = !hasJoinedBattle;
+            
+            // Only prevent joining if characters are actively jumping/landing (not during waiting/prep phases)
+            var anyCharacterJumping = false;
+            if (instance_exists(objPlayer)) {
+                if (objPlayer.jumpState == "jumping" || objPlayer.jumpState == "landing") {
+                    anyCharacterJumping = true;
+                }
+            }
+            with (ObjFollower) {
+                if (jumpState == "jumping" || jumpState == "landing") {
+                    anyCharacterJumping = true;
+                }
+            }
+            
+            if (distanceToTarget <= catchRadius + 16 && canJoinBattle && !anyCharacterJumping) {
+                show_debug_message("Enemy " + string(id) + " JOINING BATTLE!");
+                hasJoinedBattle = true;
+                
+                // Enemy gets knocked back instead of player (don't affect character movement since they're already caught)
+                var impactDir = point_direction(chaseTarget.x, chaseTarget.y, x, y);
+                impactX = lengthdir_x(impactForce, impactDir);
+                impactY = lengthdir_y(impactForce, impactDir);
+                
+                // Add this enemy's type to the battle queue
+                if (instance_exists(objBattleControl)) {
+                    with (objBattleControl) {
+                        if (is_array(pendingEnemyTypes)) {
+                            for (var i = 0; i < other.battleEnemyCount; i++) {
+                                array_push(pendingEnemyTypes, other.enemyType);
+                            }
+                            show_debug_message("Added enemy to battle queue. Total enemies: " + string(array_length(pendingEnemyTypes)));
+                        }
+                    }
+                }
+                
+                enemyState = "caught";
+                chaseTarget = noone;
+            } else if (distanceToTarget <= catchRadius + 16) {
+                // Already joined, just stay in place
+                moveX = 0;
+                moveY = 0;
+                spd = 0;
+            } else {
+                // Move towards target
+                finalDir = bestAngle;
+                moveX = lengthdir_x(1, finalDir);
+                moveY = lengthdir_y(1, finalDir);
+                spd = chaseSpeed;
+            }
+        } else {
+            // Wait for delay
+            moveX = 0;
+            moveY = 0;
+            spd = 0;
+        }
         break;
 }
 
@@ -355,7 +485,24 @@ if (hasCaughtPlayer) {
         }
     }
     
-    if (impactFinished && playerImpactFinished && followerImpactFinished && battleTransitionTimer >= battleTransitionDelay) {
+    // Check if there are any enemies still joining the battle
+    var enemiesStillJoining = false;
+    var joiningCount = 0;
+    with (ObjEnemie) {
+        if (enemyState == "joining_battle") {
+            enemiesStillJoining = true;
+            joiningCount++;
+        }
+    }
+    
+    // Extend the delay if enemies are still joining
+    var effectiveTransitionDelay = battleTransitionDelay;
+    if (enemiesStillJoining) {
+        effectiveTransitionDelay = battleTransitionDelay + 90; // Give 1.5 extra seconds for joining
+        show_debug_message("Delaying battle transition - " + string(joiningCount) + " enemies still joining");
+    }
+    
+    if (impactFinished && playerImpactFinished && followerImpactFinished && battleTransitionTimer >= effectiveTransitionDelay) {
         if (instance_exists(objBattleControl)) {
             with (objBattleControl) {
                 if(!battleBoxActive) {
@@ -365,14 +512,15 @@ if (hasCaughtPlayer) {
                         array_push(encounterEnemies, other.enemyType);
                     }
                     
-                    show_debug_message("Preparing to spawn " + string(array_length(encounterEnemies)) + " enemies of type: " + other.enemyType);
-                    show_debug_message("Enemy data being stored: " + string(encounterEnemies));
-                    
                     // Store encounter data directly in the battle control object
-                    pendingEnemyTypes = encounterEnemies;
+                    // Append to existing enemies instead of overwriting them
+                    if (!is_array(pendingEnemyTypes)) {
+                        pendingEnemyTypes = [];
+                    }
+                    for (var i = 0; i < array_length(encounterEnemies); i++) {
+                        array_push(pendingEnemyTypes, encounterEnemies[i]);
+                    }
                     shouldSpawnEnemies = true;
-                    
-                    show_debug_message("pendingEnemyTypes set to: " + string(pendingEnemyTypes));
                     
                     // Start counter animation from 0 BEFORE transition begins
                     startCounterAnimation();

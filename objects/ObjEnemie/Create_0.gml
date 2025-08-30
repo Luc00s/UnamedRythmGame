@@ -91,3 +91,8 @@ battleTransitionDelay = 30;
 // Enemy type for battle encounters
 enemyType = "gnome"; // Default enemy type
 battleEnemyCount = 1; // How many enemies to spawn in battle
+
+// Joining battle system
+joinBattleTimer = 0;
+joinBattleDelay = 0;
+hasJoinedBattle = false;

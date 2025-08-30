@@ -143,24 +143,14 @@ function calculateEnemyPositions(enemyCount) {
 
 // Function to spawn battle enemies (additive)
 function spawnBattleEnemies(enemyTypes) {
-    show_debug_message("=== spawnBattleEnemies called ===");
-    show_debug_message("enemyTypes parameter: " + string(enemyTypes));
-    show_debug_message("enemyTypes is array: " + string(is_array(enemyTypes)));
-    
     // Safety check for undefined or invalid arrays
     if (enemyTypes == undefined || !is_array(enemyTypes)) {
-        show_debug_message("ERROR: enemyTypes is undefined or not an array!");
         return;
-    }
-    
-    if (is_array(enemyTypes)) {
-        show_debug_message("Array length: " + string(array_length(enemyTypes)));
     }
     
     var newEnemyCount = array_length(enemyTypes);
     var currentEnemyCount = instance_number(objBattleEnemy);
     var totalEnemyCount = min(currentEnemyCount + newEnemyCount, maxEnemies);
-    show_debug_message("Current enemies: " + string(currentEnemyCount) + ", New: " + string(newEnemyCount) + ", Total: " + string(totalEnemyCount));
     
     // Only spawn if we haven't reached the maximum
     if (currentEnemyCount >= maxEnemies) {
@@ -190,22 +180,14 @@ function spawnBattleEnemies(enemyTypes) {
     }
     
     // Create new enemies
-    show_debug_message("Creating " + string(actualNewCount) + " new enemies");
     for (var i = 0; i < actualNewCount; i++) {
         var enemyType = enemyTypes[i];
-        show_debug_message("Creating enemy " + string(i) + " of type: " + string(enemyType));
-        
         var prefab = getEnemyPrefab(enemyType);
-        show_debug_message("Got prefab: " + string(prefab));
-        
         var posIndex = currentEnemyCount + i;
         var pos = allPositions[posIndex];
-        show_debug_message("Position " + string(posIndex) + ": " + string(pos));
         
         // Create battle enemy instance
-        show_debug_message("Creating objBattleEnemy at " + string(pos.x) + ", " + string(pos.y));
         var enemy = instance_create_depth(pos.x, pos.y, -100, objBattleEnemy);
-        show_debug_message("Created enemy instance: " + string(enemy));
         
         with (enemy) {
             // Set stats from prefab

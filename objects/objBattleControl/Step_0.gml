@@ -1,16 +1,8 @@
 // Check for pending enemies to spawn after room transition
-show_debug_message("Current room: " + string(room) + " (RoomBattle: " + string(RoomBattle) + ")");
-show_debug_message("shouldSpawnEnemies: " + string(shouldSpawnEnemies));
-show_debug_message("pendingEnemyTypes: " + string(pendingEnemyTypes));
-
 if (shouldSpawnEnemies && room == RoomBattle && is_array(pendingEnemyTypes) && array_length(pendingEnemyTypes) > 0) {
-    show_debug_message("Spawning pending enemies in battle room: " + string(pendingEnemyTypes));
-    
     // Clear existing enemies and spawn new ones for battle
     clearAllEnemies();
     spawnBattleEnemies(pendingEnemyTypes);
-    
-    show_debug_message("Enemy count after spawning: " + string(instance_number(objBattleEnemy)));
     
     // Clear the pending enemies so they don't spawn again
     shouldSpawnEnemies = false;
