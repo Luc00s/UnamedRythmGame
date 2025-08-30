@@ -90,8 +90,9 @@ if (jumpState == "waiting") {
             if (other.battleBoxIndex < array_length(battleBoxes)) {
                 var box = battleBoxes[other.battleBoxIndex];
                 other.x = box.x + 34;
+                other.y = box.y + box.impactOffset + 35;
                 other.drawX = box.x + 34;
-                other.drawY = box.y + box.impactOffset + 24;
+                other.drawY = box.y + box.impactOffset + 35;
             }
         }
     }

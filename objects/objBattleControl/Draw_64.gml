@@ -1,12 +1,57 @@
 var screenWidth = 320;
 var barHeight = 35;
 
+// Draw top black bar first
 for(var i = -1; i <= ceil(screenWidth / 32); i++) {
     draw_sprite(sprBattleBlackBar, 0, topBarScrollX + (i * 32), topBarY);
+}
+
+// Draw character sprites (above top bar, behind bottom bar)
+if(battleBoxActive) {
+    if (instance_exists(objPlayer)) {
+        with (objPlayer) {
+            if (battleBoxIndex != -1) {
+                // Only draw in GUI when normal sprite is NOT being drawn
+                // GUI sprite shows during: waiting, preparing, jumping, and when exiting until landed
+                var shouldDrawInGUI = (jumpState != "landed" && jumpState != "none");
+                
+                if (shouldDrawInGUI) {
+                    // Draw same sprite and image_index as the player object would
+                    if (sprite_exists(sprite_index)) {
+                        draw_sprite_ext(sprite_index, image_index, x, y, 
+                                      image_xscale, image_yscale, image_angle, 
+                                      image_blend, image_alpha);
+                    }
+                }
+            }
+        }
+    }
+    
+    with (ObjFollower) {
+        if (battleBoxIndex != -1) {
+            // Only draw in GUI when normal sprite is NOT being drawn
+            // GUI sprite shows during: waiting, preparing, jumping, and when exiting until landed
+            var shouldDrawInGUI = (jumpState != "landed" && jumpState != "none");
+            
+            if (shouldDrawInGUI) {
+                // Draw same sprite and image_index as the follower object would
+                if (sprite_exists(sprite_index)) {
+                    draw_sprite_ext(sprite_index, image_index, x, y, 
+                                  image_xscale, image_yscale, image_angle, 
+                                  image_blend, image_alpha);
+                }
+            }
+        }
+    }
+}
+
+// Draw bottom black bar last (on top of players)
+for(var i = -1; i <= ceil(screenWidth / 32); i++) {
     draw_sprite_ext(sprBattleBlackBar, 0, bottomBarScrollX + (i * 32), bottomBarY - 47, 1, -(47/35), 0, c_white, 1);
 }
 
 if(battleBoxActive) {
+    
     for(var i = 0; i < array_length(battleBoxes); i++) {
         var box = battleBoxes[i];
         var boxDrawY = box.y + box.impactOffset;

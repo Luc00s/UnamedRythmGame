@@ -158,7 +158,20 @@ switch (enemyState) {
             
             var distanceToTarget = point_distance(x, y, chaseTarget.x, chaseTarget.y);
             
-            if (distanceToTarget <= catchRadius && !hasCaughtPlayer) {
+            // Check if any characters are not fully landed (immune to collision until completely landed)
+            var anyCharacterJumping = false;
+            if (instance_exists(objPlayer)) {
+                if (objPlayer.jumpState != "none" || (objPlayer.jumpIsExiting && objPlayer.jumpState != "none")) {
+                    anyCharacterJumping = true;
+                }
+            }
+            with (ObjFollower) {
+                if (jumpState != "none" || (jumpIsExiting && jumpState != "none")) {
+                    anyCharacterJumping = true;
+                }
+            }
+            
+            if (distanceToTarget <= catchRadius && !hasCaughtPlayer && !anyCharacterJumping) {
                 hasCaughtPlayer = true;
                 
                 var impactDir = point_direction(x, y, chaseTarget.x, chaseTarget.y);
@@ -180,7 +193,7 @@ switch (enemyState) {
                 }
             }
             
-            if (hasCaughtPlayer) {
+            if (hasCaughtPlayer || anyCharacterJumping) {
                 moveX = 0;
                 moveY = 0;
                 spd = 0;
@@ -477,7 +490,9 @@ for (var r = 0; r < rayCount; r++) {
         
         if (instance_exists(objPlayer)) {
             var playerCheckRadius = 8;
-            if (point_distance(rayX, rayY, objPlayer.x, objPlayer.y) <= playerCheckRadius) {
+            // Only detect player if they are not in air (jumping/preparing states)
+            var playerInAir = (objPlayer.jumpState != "none" || (objPlayer.jumpIsExiting && objPlayer.jumpState != "none"));
+            if (point_distance(rayX, rayY, objPlayer.x, objPlayer.y) <= playerCheckRadius && !playerInAir) {
                 playerDetected = true;
                 hitTarget = objPlayer;
                 hitDistance = point_distance(x, y, rayX, rayY);
@@ -488,7 +503,9 @@ for (var r = 0; r < rayCount; r++) {
         
         with (ObjFollower) {
             var followerCheckRadius = 8;
-            if (point_distance(rayX, rayY, x, y) <= followerCheckRadius) {
+            // Only detect follower if they are not in air (jumping/preparing states)
+            var followerInAir = (jumpState != "none" || (jumpIsExiting && jumpState != "none"));
+            if (point_distance(rayX, rayY, x, y) <= followerCheckRadius && !followerInAir) {
                 other.followerDetected = true;
                 hitTarget = id;
                 hitDistance = point_distance(other.x, other.y, rayX, rayY);

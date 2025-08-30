@@ -117,7 +117,7 @@ if(keyboard_check_pressed(vk_space)) {
                 jumpStartX = x;
                 jumpStartY = y;
                 jumpTargetX = round(other.battleBoxes[i].x + 34);
-                jumpTargetY = round(other.battleBoxes[i].targetY + 24);
+                jumpTargetY = round(other.battleBoxes[i].targetY + 35);
                 jumpProgress = 0;
                 jumpDelay = i * 8;
                 jumpDelayTimer = 0;
