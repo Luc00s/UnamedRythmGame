@@ -23,6 +23,8 @@ animTimer = 0;
 targetX = x;
 targetY = y;
 moveSpeed = 0.15; // Lerp speed for smooth movement
+moveDelay = 0; // Delay before starting movement
+moveTimer = 0; // Timer for movement delay
 
 // Depth for proper layering
 depth = -y;

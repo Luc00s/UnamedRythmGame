@@ -1,8 +1,12 @@
-// Battle Enemy Step Event
+// Handle movement delay for smooth entrance
+moveTimer++;
 
-// Smooth movement toward target position
-x = lerp(x, targetX, moveSpeed);
-y = lerp(y, targetY, moveSpeed);
+// Only move after delay has passed
+if (moveTimer >= moveDelay) {
+    // Smooth movement toward target position
+    x = lerp(x, targetX, moveSpeed);
+    y = lerp(y, targetY, moveSpeed);
+}
 
 // Update depth for proper layering
 depth = -y;
@@ -10,11 +14,10 @@ depth = -y;
 // Handle death
 if (currentHp <= 0 && !isDead) {
     isDead = true;
-    // Could add death animation here
 }
 
 // Simple idle animation
 animTimer++;
 if (battleState == "idle") {
-    // Simple breathing animation or idle behavior
+    // Idle behavior can be added here
 }

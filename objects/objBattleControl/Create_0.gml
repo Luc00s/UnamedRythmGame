@@ -49,92 +49,64 @@ function getEnemyPrefab(enemyType) {
     }
 }
 
-// Function to calculate enemy positions in V formation
+// Function to calculate enemy positions with alternating zigzag
 function calculateEnemyPositions(enemyCount) {
     var positions = [];
-    var screenWidth = room_width;
-    var screenHeight = room_height;
     
     if (enemyCount <= 0) return positions;
     
-    // Get sprite dimensions for spacing
-    var spriteWidth = sprite_get_width(SprEnemieGnome);
-    var spriteHeight = sprite_get_height(SprEnemieGnome);
+    var centerX = room_width / 2;
+    var centerY = (room_height / 2) - 16;
     
-    // Spacing constants
-    var horizontalSpacing = spriteWidth;
-    var verticalSpacing = spriteHeight * 0.2; // Rows closer together for formation look
-    
-    // Base position (center of screen)
-    var centerX = screenWidth / 2;
-    var baseY = (screenHeight / 2) - 16;
-    
-    // Define formation patterns based on enemy count
-    var formations = [];
-    
-    switch(enemyCount) {
-        case 1:
-            // 1 enemy: center front
-            formations = [
-                {row: 0, count: 1, enemies: [0]}
-            ];
-            break;
-            
-        case 2:
-            // 2 enemies: both front, side by side
-            formations = [
-                {row: 0, count: 2, enemies: [0, 1]}
-            ];
-            break;
-            
-        case 3:
-            // 3 enemies: V formation - 1 front, 2 back
-            formations = [
-                {row: 0, count: 1, enemies: [0]},
-                {row: 1, count: 2, enemies: [1, 2]}
-            ];
-            break;
-            
-        case 4:
-            // 4 enemies: 1 front, 2 middle back, 1 far back
-            formations = [
-                {row: 0, count: 1, enemies: [0]},
-                {row: 1, count: 2, enemies: [1, 2]},
-                {row: 2, count: 1, enemies: [3]}
-            ];
-            break;
-            
-        case 5:
-            // 5 enemies: 1 front, 2 middle back, 2 far back
-            formations = [
-                {row: 0, count: 1, enemies: [0]},
-                {row: 1, count: 2, enemies: [1, 2]},
-                {row: 2, count: 2, enemies: [3, 4]}
-            ];
-            break;
+    // Get sprite width from existing enemies, or default if none exist
+    var spriteWidth = 32; // Default fallback width
+    var centerEnemy = instance_find(objBattleEnemy, 0);
+    if (instance_exists(centerEnemy)) {
+        // Get the sprite width from the center enemy
+        spriteWidth = sprite_get_width(centerEnemy.sprite_index);
+    } else {
+        // If no enemies exist yet, use a default sprite
+        spriteWidth = sprite_get_width(SprEnemieGnome);
     }
     
-    // Calculate positions for each formation row
-    for (var f = 0; f < array_length(formations); f++) {
-        var formation = formations[f];
-        var rowY = baseY - (formation.row * verticalSpacing); // Subtract to go backwards/up
-        var enemiesInRow = formation.count;
+    var spacing = spriteWidth - 4; // Sprite width + 4 pixels spacing
+    var verticalOffset = 10; // How many pixels up/down from center
+    
+    // First enemy always in center
+    positions[0] = {x: centerX, y: centerY};
+    
+    if (enemyCount == 1) return positions;
+    
+    // Generate positions dynamically for any number of enemies
+    var side = 1; // 1 = right, -1 = left
+    var upDown = -1; // Start with up (-1 = up, 1 = down)
+    var distance = 1; // How far from center
+    
+    for (var i = 1; i < enemyCount; i++) {
+        var xPos = centerX + (side * distance * spacing);
+        var yPos = centerY;
         
-        // Calculate horizontal positions for this row
-        if (enemiesInRow == 1) {
-            // Single enemy in center
-            var enemyIndex = formation.enemies[0];
-            positions[enemyIndex] = {x: floor(centerX), y: floor(rowY)};
+        // Only apply vertical offset for "up" position
+        if (upDown == -1) {
+            yPos = centerY - verticalOffset; // Up position
+        }
+        // Down position stays at centerY (no offset)
+        
+        positions[i] = {x: xPos, y: yPos};
+        
+        // Alternate between right and left
+        if (side == 1) {
+            // Was right, now go left (same distance)
+            side = -1;
         } else {
-            // Multiple enemies spread horizontally
-            var totalRowWidth = (enemiesInRow - 1) * horizontalSpacing;
-            var rowStartX = centerX - (totalRowWidth / 2);
-            
-            for (var e = 0; e < enemiesInRow; e++) {
-                var enemyIndex = formation.enemies[e];
-                var enemyX = rowStartX + (e * horizontalSpacing);
-                positions[enemyIndex] = {x: floor(enemyX), y: floor(rowY)};
-            }
+            // Was left, now go right (increase distance)
+            side = 1;
+            distance++;
+        }
+        
+        // Alternate up and down every 2 enemies
+        if (i % 2 == 0) {
+            upDown = -upDown;
         }
     }
     
@@ -163,31 +135,20 @@ function spawnBattleEnemies(enemyTypes) {
     // Reposition all enemies (existing + new) to maintain proper alignment
     var allPositions = calculateEnemyPositions(totalEnemyCount);
     
-    // Update positions of existing enemies (smooth movement)
-    var existingEnemies = [];
-    with (objBattleEnemy) {
-        array_push(existingEnemies, id);
-    }
+    // Keep existing enemies in their current positions - DON'T move them
     
-    for (var i = 0; i < array_length(existingEnemies); i++) {
-        var enemy = existingEnemies[i];
-        var pos = allPositions[i];
-        with (enemy) {
-            targetX = pos.x;
-            targetY = pos.y;
-            battleIndex = i;
-        }
-    }
+    // Create new enemies starting from center position
+    var centerX = room_width / 2;
+    var centerY = (room_height / 2) - 16;
     
-    // Create new enemies
     for (var i = 0; i < actualNewCount; i++) {
         var enemyType = enemyTypes[i];
         var prefab = getEnemyPrefab(enemyType);
         var posIndex = currentEnemyCount + i;
         var pos = allPositions[posIndex];
         
-        // Create battle enemy instance
-        var enemy = instance_create_depth(pos.x, pos.y, -100, objBattleEnemy);
+        // Create battle enemy at center position (will move to target)
+        var enemy = instance_create_depth(centerX, centerY, -100, objBattleEnemy);
         
         with (enemy) {
             // Set stats from prefab
@@ -211,6 +172,10 @@ function spawnBattleEnemies(enemyTypes) {
             
             // Set battle position index
             battleIndex = posIndex;
+            
+            // Add a small delay for staggered movement
+            moveDelay = i * 5; // Each enemy waits 5 frames more than the previous
+            moveTimer = 0;
         }
     }
 }
