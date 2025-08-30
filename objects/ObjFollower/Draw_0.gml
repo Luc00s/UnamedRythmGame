@@ -1,3 +1,8 @@
+// Check if object is visible (for transition surface capture)
+if (!visible) {
+    return;
+}
+
 // Only draw normal sprite when NOT in battle mode OR when fully landed in battle
 var shouldDrawNormalSprite = false;
 

@@ -15,4 +15,3 @@ softness = 0.1;
 transition_active = false;     
 old_surface = -1;             
 target_room = -1;             
-

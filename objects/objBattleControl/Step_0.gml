@@ -1,3 +1,22 @@
+// Check for pending enemies to spawn after room transition
+show_debug_message("Current room: " + string(room) + " (RoomBattle: " + string(RoomBattle) + ")");
+show_debug_message("shouldSpawnEnemies: " + string(shouldSpawnEnemies));
+show_debug_message("pendingEnemyTypes: " + string(pendingEnemyTypes));
+
+if (shouldSpawnEnemies && room == RoomBattle && is_array(pendingEnemyTypes) && array_length(pendingEnemyTypes) > 0) {
+    show_debug_message("Spawning pending enemies in battle room: " + string(pendingEnemyTypes));
+    
+    // Clear existing enemies and spawn new ones for battle
+    clearAllEnemies();
+    spawnBattleEnemies(pendingEnemyTypes);
+    
+    show_debug_message("Enemy count after spawning: " + string(instance_number(objBattleEnemy)));
+    
+    // Clear the pending enemies so they don't spawn again
+    shouldSpawnEnemies = false;
+    pendingEnemyTypes = [];
+}
+
 // Atualização automática das caixas de batalha
 battleBoxCount = getPartyMemberCount();
 
@@ -50,13 +69,29 @@ if(keyboard_check_pressed(ord("F"))) {
     restoreMana("red", 8); // F to restore 8 mana for Red
 }
 
+// Test buttons for enemy spawning (additive)
+if(keyboard_check_pressed(ord("G"))) {
+    // Add 1 gnome (additive)
+    var enemyTypes = ["gnome"];
+    spawnBattleEnemies(enemyTypes);
+}
+if(keyboard_check_pressed(ord("H"))) {
+    // Clear all enemies
+    clearAllEnemies();
+}
+
 if(keyboard_check_pressed(vk_space)) {
     if(!battleBoxActive) {
         previousRoom = room;
+        
+        // Counter animations are now handled by the ObjEnemie that caught the player
+        
         start_transition(RoomBattle);
         battleBoxActive = true;
         animationTimer = 0;
         movingUp = true;
+        
+        // Enemy spawning is now handled by the ObjEnemie that caught the player
         
         topBarTargetY = 0;
         bottomBarTargetY = room_height + 48;
@@ -180,6 +215,9 @@ if(keyboard_check_pressed(vk_escape) && battleBoxActive) {
     battleBoxes = [];
     movingUp = true;
     
+    // Clear battle enemies when escaping
+    clearAllEnemies();
+    
     // Force all characters to reset their states immediately
     if (instance_exists(objPlayer)) {
         with (objPlayer) {
@@ -261,6 +299,8 @@ if(battleBoxActive) {
             }
             box.textboxY = lerp(box.textboxY, box.y, 0.25);
             
+            // Counter animations now start immediately when intro begins, not when boxes settle
+            
             // Check for character impacts and apply effects
             if (!box.hasBeenHit) {
                 var foundLandedCharacter = false;
@@ -340,6 +380,9 @@ if(battleBoxActive) {
             battleBoxes = [];
             movingUp = true;
             battleExitTimer = 0;
+            
+            // Clear battle enemies when exiting
+            clearAllEnemies();
             
             // Force all characters to reset their states
             if (instance_exists(objPlayer)) {

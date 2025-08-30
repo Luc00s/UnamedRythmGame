@@ -87,3 +87,7 @@ impactY = 0;
 
 battleTransitionTimer = 0;
 battleTransitionDelay = 30;
+
+// Enemy type for battle encounters
+enemyType = "gnome"; // Default enemy type
+battleEnemyCount = 1; // How many enemies to spawn in battle

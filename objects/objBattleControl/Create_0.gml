@@ -5,6 +5,291 @@ battleExitTimer = 0;
 battleExitTimeout = 300;
 previousRoom = -1;
 
+// Enemy system
+battleEnemies = [];
+maxEnemies = 5;
+
+// Enemy spawning system
+pendingEnemyTypes = [];
+shouldSpawnEnemies = false;
+
+// Enemy prefab definitions
+function getEnemyPrefab(enemyType) {
+    switch(enemyType) {
+        case "gnome":
+            return {
+                name: "Gnome",
+                currentHp: 50,
+                maxHp: 50,
+                dmg: 12,
+                defense: 5,
+                ability: "Earth Strike",
+                spriteIndex: SprEnemieGnome,
+                imageIndex: 0,
+                imageSpeed: 1,
+                xScale: 1,
+                yScale: 1
+            };
+            
+        // Add more enemy types here later
+        default:
+            return {
+                name: "Unknown",
+                currentHp: 1,
+                maxHp: 1,
+                dmg: 1,
+                defense: 0,
+                ability: "None",
+                spriteIndex: SprEnemieGnome,
+                imageIndex: 0,
+                imageSpeed: 1,
+                xScale: 1,
+                yScale: 1
+            };
+    }
+}
+
+// Function to calculate enemy positions in V formation
+function calculateEnemyPositions(enemyCount) {
+    var positions = [];
+    var screenWidth = room_width;
+    var screenHeight = room_height;
+    
+    if (enemyCount <= 0) return positions;
+    
+    // Get sprite dimensions for spacing
+    var spriteWidth = sprite_get_width(SprEnemieGnome);
+    var spriteHeight = sprite_get_height(SprEnemieGnome);
+    
+    // Spacing constants
+    var horizontalSpacing = spriteWidth;
+    var verticalSpacing = spriteHeight * 0.2; // Rows closer together for formation look
+    
+    // Base position (center of screen)
+    var centerX = screenWidth / 2;
+    var baseY = (screenHeight / 2) - 16;
+    
+    // Define formation patterns based on enemy count
+    var formations = [];
+    
+    switch(enemyCount) {
+        case 1:
+            // 1 enemy: center front
+            formations = [
+                {row: 0, count: 1, enemies: [0]}
+            ];
+            break;
+            
+        case 2:
+            // 2 enemies: both front, side by side
+            formations = [
+                {row: 0, count: 2, enemies: [0, 1]}
+            ];
+            break;
+            
+        case 3:
+            // 3 enemies: V formation - 1 front, 2 back
+            formations = [
+                {row: 0, count: 1, enemies: [0]},
+                {row: 1, count: 2, enemies: [1, 2]}
+            ];
+            break;
+            
+        case 4:
+            // 4 enemies: 1 front, 2 middle back, 1 far back
+            formations = [
+                {row: 0, count: 1, enemies: [0]},
+                {row: 1, count: 2, enemies: [1, 2]},
+                {row: 2, count: 1, enemies: [3]}
+            ];
+            break;
+            
+        case 5:
+            // 5 enemies: 1 front, 2 middle back, 2 far back
+            formations = [
+                {row: 0, count: 1, enemies: [0]},
+                {row: 1, count: 2, enemies: [1, 2]},
+                {row: 2, count: 2, enemies: [3, 4]}
+            ];
+            break;
+    }
+    
+    // Calculate positions for each formation row
+    for (var f = 0; f < array_length(formations); f++) {
+        var formation = formations[f];
+        var rowY = baseY - (formation.row * verticalSpacing); // Subtract to go backwards/up
+        var enemiesInRow = formation.count;
+        
+        // Calculate horizontal positions for this row
+        if (enemiesInRow == 1) {
+            // Single enemy in center
+            var enemyIndex = formation.enemies[0];
+            positions[enemyIndex] = {x: floor(centerX), y: floor(rowY)};
+        } else {
+            // Multiple enemies spread horizontally
+            var totalRowWidth = (enemiesInRow - 1) * horizontalSpacing;
+            var rowStartX = centerX - (totalRowWidth / 2);
+            
+            for (var e = 0; e < enemiesInRow; e++) {
+                var enemyIndex = formation.enemies[e];
+                var enemyX = rowStartX + (e * horizontalSpacing);
+                positions[enemyIndex] = {x: floor(enemyX), y: floor(rowY)};
+            }
+        }
+    }
+    
+    return positions;
+}
+
+// Function to spawn battle enemies (additive)
+function spawnBattleEnemies(enemyTypes) {
+    show_debug_message("=== spawnBattleEnemies called ===");
+    show_debug_message("enemyTypes parameter: " + string(enemyTypes));
+    show_debug_message("enemyTypes is array: " + string(is_array(enemyTypes)));
+    
+    // Safety check for undefined or invalid arrays
+    if (enemyTypes == undefined || !is_array(enemyTypes)) {
+        show_debug_message("ERROR: enemyTypes is undefined or not an array!");
+        return;
+    }
+    
+    if (is_array(enemyTypes)) {
+        show_debug_message("Array length: " + string(array_length(enemyTypes)));
+    }
+    
+    var newEnemyCount = array_length(enemyTypes);
+    var currentEnemyCount = instance_number(objBattleEnemy);
+    var totalEnemyCount = min(currentEnemyCount + newEnemyCount, maxEnemies);
+    show_debug_message("Current enemies: " + string(currentEnemyCount) + ", New: " + string(newEnemyCount) + ", Total: " + string(totalEnemyCount));
+    
+    // Only spawn if we haven't reached the maximum
+    if (currentEnemyCount >= maxEnemies) {
+        return; // Already at max capacity
+    }
+    
+    // Calculate how many new enemies we can actually spawn
+    var actualNewCount = min(newEnemyCount, maxEnemies - currentEnemyCount);
+    
+    // Reposition all enemies (existing + new) to maintain proper alignment
+    var allPositions = calculateEnemyPositions(totalEnemyCount);
+    
+    // Update positions of existing enemies (smooth movement)
+    var existingEnemies = [];
+    with (objBattleEnemy) {
+        array_push(existingEnemies, id);
+    }
+    
+    for (var i = 0; i < array_length(existingEnemies); i++) {
+        var enemy = existingEnemies[i];
+        var pos = allPositions[i];
+        with (enemy) {
+            targetX = pos.x;
+            targetY = pos.y;
+            battleIndex = i;
+        }
+    }
+    
+    // Create new enemies
+    show_debug_message("Creating " + string(actualNewCount) + " new enemies");
+    for (var i = 0; i < actualNewCount; i++) {
+        var enemyType = enemyTypes[i];
+        show_debug_message("Creating enemy " + string(i) + " of type: " + string(enemyType));
+        
+        var prefab = getEnemyPrefab(enemyType);
+        show_debug_message("Got prefab: " + string(prefab));
+        
+        var posIndex = currentEnemyCount + i;
+        var pos = allPositions[posIndex];
+        show_debug_message("Position " + string(posIndex) + ": " + string(pos));
+        
+        // Create battle enemy instance
+        show_debug_message("Creating objBattleEnemy at " + string(pos.x) + ", " + string(pos.y));
+        var enemy = instance_create_depth(pos.x, pos.y, -100, objBattleEnemy);
+        show_debug_message("Created enemy instance: " + string(enemy));
+        
+        with (enemy) {
+            // Set stats from prefab
+            enemyName = prefab.name;
+            currentHp = prefab.currentHp;
+            maxHp = prefab.maxHp;
+            dmg = prefab.dmg;
+            defense = prefab.defense;
+            ability = prefab.ability;
+            
+            // Set sprite properties
+            sprite_index = prefab.spriteIndex;
+            image_index = prefab.imageIndex;
+            image_speed = prefab.imageSpeed;
+            image_xscale = prefab.xScale;
+            image_yscale = prefab.yScale;
+            
+            // Set movement targets (smooth movement to formation)
+            targetX = pos.x;
+            targetY = pos.y;
+            
+            // Set battle position index
+            battleIndex = posIndex;
+        }
+    }
+}
+
+// Function to clear all enemies
+function clearAllEnemies() {
+    with (objBattleEnemy) {
+        instance_destroy();
+    }
+}
+
+// Function to reset counters to 0 and prepare for animation (but don't disable)
+function startCounterAnimation() {
+    // Reset all counter display values to 0 but keep animation enabled
+    var playerNames = ["violet", "red", "robot", "gang"];
+    
+    for (var p = 0; p < array_length(playerNames); p++) {
+        var playerName = playerNames[p];
+        
+        // Reset HP counter display only
+        if (variable_struct_exists(hpCounters, playerName)) {
+            hpCounters[$ playerName].display_hp = 0;
+            hpCounters[$ playerName].animTimer = 0;
+            for (var i = 0; i < hpCounterConfig.digits; i++) {
+                hpCounters[$ playerName].floats[i] = 0;
+            }
+        }
+        
+        // Reset Mana counter display only
+        if (variable_struct_exists(manaCounters, playerName)) {
+            manaCounters[$ playerName].display_mana = 0;
+            manaCounters[$ playerName].animTimer = 0;
+            for (var i = 0; i < manaCounterConfig.digits; i++) {
+                manaCounters[$ playerName].floats[i] = 0;
+            }
+        }
+    }
+}
+
+
+// Start all counter animations immediately when intro begins
+function startAllCounterAnimations() {
+    var playerNames = ["violet", "red", "robot", "gang"];
+    
+    for (var p = 0; p < array_length(playerNames); p++) {
+        var playerName = playerNames[p];
+        
+        // Start HP counter animation
+        if (variable_struct_exists(hpCounters, playerName) && variable_struct_exists(playerStats, playerName)) {
+            hpCounters[$ playerName].shouldAnimate = true;
+            hpCounters[$ playerName].animTimer = 0;
+        }
+        
+        // Start Mana counter animation
+        if (variable_struct_exists(manaCounters, playerName) && variable_struct_exists(playerStats, playerName)) {
+            manaCounters[$ playerName].shouldAnimate = true;
+            manaCounters[$ playerName].animTimer = 0;
+        }
+    }
+}
+
 // Ensure battle GUI renders on top of transitions
 depth = -10000;
 
@@ -22,20 +307,20 @@ manaCounterConfig = {
     height: 5
 };
 
-// Rolling counter arrays for each player
+// Rolling counter arrays for each player - start at 0 for animation effect
 hpCounters = {
-    violet: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 100},
-    red: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 120},
-    robot: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 80},
-    gang: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 110}
+    violet: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 0, display_hp: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    red: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 0, display_hp: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    robot: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 0, display_hp: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    gang: {floats: array_create(hpCounterConfig.digits, 0), current_hp: 0, display_hp: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0}
 };
 
-// Rolling counter arrays for mana for each player
+// Rolling counter arrays for mana for each player - start at 0 for animation effect
 manaCounters = {
-    violet: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 50},
-    red: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 40},
-    robot: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 70},
-    gang: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 35}
+    violet: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 0, display_mana: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    red: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 0, display_mana: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    robot: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 0, display_mana: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0},
+    gang: {floats: array_create(manaCounterConfig.digits, 0), current_mana: 0, display_mana: 0, shouldAnimate: false, animStartFrame: 0, animTimer: 0}
 };
 
 // Sistema de estatísticas dos personagens
@@ -196,21 +481,39 @@ function updateHPCounter(playerName) {
     }
     
     var counter = hpCounters[$ playerName];
-    var targetHP = playerStats[$ playerName].health;
-    counter.current_hp = targetHP;
+    var targetHP = counter.shouldAnimate ? playerStats[$ playerName].health : 0;
     
-    // Convert HP to string with leading zeros
+    // Simple frame-based counter system - all counters finish in exactly 1.5 seconds
+    if (counter.shouldAnimate) {
+        var animationDurationFrames = 90; // 1.5 seconds at 60 FPS
+        counter.animTimer++;
+        
+        var progress = min(counter.animTimer / animationDurationFrames, 1.0);
+        counter.display_hp = floor(targetHP * progress);
+        
+        // Stop animation when complete but keep final value
+        if (counter.animTimer >= animationDurationFrames) {
+            counter.display_hp = targetHP;
+            counter.shouldAnimate = false;
+        }
+    } else if (counter.animTimer == 0) {
+        counter.display_hp = 0; // Only stay at 0 when not started animating
+    }
+    
+    // Convert display HP to string with leading zeros for target digits
+    var displayValue = counter.display_hp;
     var hpString = "";
-    repeat(hpCounterConfig.digits - string_length(string(targetHP))) {
+    repeat(hpCounterConfig.digits - string_length(string(displayValue))) {
         hpString += "0";
     }
-    hpString += string(targetHP);
+    hpString += string(displayValue);
     
-    // Update float values for each digit
+    // Update float values with smooth rolling effect toward target digits
     for (var i = 0; i < hpCounterConfig.digits; i++) {
         var targetDigit = real(string_char_at(hpString, i + 1));
         var distance = abs(targetDigit - counter.floats[i]);
         
+        // Handle wrap-around for rolling effect
         if (distance >= 5) {
             if (targetDigit < counter.floats[i]) {
                 counter.floats[i] -= 10;
@@ -219,7 +522,8 @@ function updateHPCounter(playerName) {
             }
         }
         
-        counter.floats[i] = lerp(counter.floats[i], targetDigit, 0.1);
+        // Smooth roll animation toward the target digit
+        counter.floats[i] = lerp(counter.floats[i], targetDigit, 0.15);
         if (abs(counter.floats[i] - targetDigit) < 0.1) {
             counter.floats[i] = targetDigit;
         }
@@ -308,21 +612,39 @@ function updateManaCounter(playerName) {
     }
     
     var counter = manaCounters[$ playerName];
-    var targetMana = playerStats[$ playerName].mana;
-    counter.current_mana = targetMana;
+    var targetMana = counter.shouldAnimate ? playerStats[$ playerName].mana : 0;
     
-    // Convert mana to string with leading zeros
+    // Simple frame-based counter system - all counters finish in exactly 1.5 seconds
+    if (counter.shouldAnimate) {
+        var animationDurationFrames = 90; // 1.5 seconds at 60 FPS
+        counter.animTimer++;
+        
+        var progress = min(counter.animTimer / animationDurationFrames, 1.0);
+        counter.display_mana = floor(targetMana * progress);
+        
+        // Stop animation when complete but keep final value
+        if (counter.animTimer >= animationDurationFrames) {
+            counter.display_mana = targetMana;
+            counter.shouldAnimate = false;
+        }
+    } else if (counter.animTimer == 0) {
+        counter.display_mana = 0; // Only stay at 0 when not started animating
+    }
+    
+    // Convert display mana to string with leading zeros for target digits
+    var displayValue = counter.display_mana;
     var manaString = "";
-    repeat(manaCounterConfig.digits - string_length(string(targetMana))) {
+    repeat(manaCounterConfig.digits - string_length(string(displayValue))) {
         manaString += "0";
     }
-    manaString += string(targetMana);
+    manaString += string(displayValue);
     
-    // Update float values for each digit
+    // Update float values with smooth rolling effect toward target digits
     for (var i = 0; i < manaCounterConfig.digits; i++) {
         var targetDigit = real(string_char_at(manaString, i + 1));
         var distance = abs(targetDigit - counter.floats[i]);
         
+        // Handle wrap-around for rolling effect
         if (distance >= 5) {
             if (targetDigit < counter.floats[i]) {
                 counter.floats[i] -= 10;
@@ -331,7 +653,8 @@ function updateManaCounter(playerName) {
             }
         }
         
-        counter.floats[i] = lerp(counter.floats[i], targetDigit, 0.1);
+        // Smooth roll animation toward the target digit
+        counter.floats[i] = lerp(counter.floats[i], targetDigit, 0.15);
         if (abs(counter.floats[i] - targetDigit) < 0.1) {
             counter.floats[i] = targetDigit;
         }

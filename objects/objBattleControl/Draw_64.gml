@@ -3,7 +3,7 @@ var barHeight = 35;
 
 // Draw top black bar first
 for(var i = -1; i <= ceil(screenWidth / 32); i++) {
-    draw_sprite(sprBattleBlackBar, 0, topBarScrollX + (i * 32), topBarY);
+    draw_sprite(sprBattleBlackBar, 0, topBarScrollX + (i * 32), topBarY - 48);
 }
 
 // Draw character sprites (above top bar, behind bottom bar)

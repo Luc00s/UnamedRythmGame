@@ -359,6 +359,27 @@ if (hasCaughtPlayer) {
         if (instance_exists(objBattleControl)) {
             with (objBattleControl) {
                 if(!battleBoxActive) {
+                    // Set encounter enemies based on the enemy that caught the player
+                    var encounterEnemies = [];
+                    for (var i = 0; i < other.battleEnemyCount; i++) {
+                        array_push(encounterEnemies, other.enemyType);
+                    }
+                    
+                    show_debug_message("Preparing to spawn " + string(array_length(encounterEnemies)) + " enemies of type: " + other.enemyType);
+                    show_debug_message("Enemy data being stored: " + string(encounterEnemies));
+                    
+                    // Store encounter data directly in the battle control object
+                    pendingEnemyTypes = encounterEnemies;
+                    shouldSpawnEnemies = true;
+                    
+                    show_debug_message("pendingEnemyTypes set to: " + string(pendingEnemyTypes));
+                    
+                    // Start counter animation from 0 BEFORE transition begins
+                    startCounterAnimation();
+                    
+                    // Start all counter animations immediately when intro begins
+                    startAllCounterAnimations();
+                    
                     previousRoom = room;
                     start_transition(RoomBattle);
                     battleBoxActive = true;
