@@ -337,6 +337,37 @@ textureScrollY = 0.0;
 textureScrollSpeedX = 0.15;
 textureScrollSpeedY = 0.12;
 
+// Carousel Button System
+carouselButtons = [];
+carouselSelectedIndex = 0;
+carouselTargetIndex = 0;
+carouselCenterX = 12 + 22 + 6; // 12px padding + 22px horizontal radius + 6px right adjustment
+carouselCenterY = 6 + 10 + 6;  // 6px padding + 10px vertical radius + 6px down adjustment
+carouselRadiusX = 22;      // Horizontal radius (+6px)
+carouselRadiusY = 8;       // Vertical radius
+carouselRotationSpeed = 0.15; // Smooth rotation interpolation speed
+
+// Initialize carousel buttons (4 buttons matching sprite frames)
+for (var i = 0; i < 4; i++) {
+    var button = {
+        index: i,
+        currentAngle: (i / 4) * 2 * pi, // Evenly spaced around ellipse
+        targetAngle: (i / 4) * 2 * pi,
+        x: 0,
+        y: 0
+    };
+    array_push(carouselButtons, button);
+}
+
+// Input handling for carousel
+carouselInputTimer = 0;
+carouselInputDelay = 12;     // Initial delay before repeating
+carouselInputRepeatRate = 6; // Frames between repeats when holding
+carouselLeftPressed = false;
+carouselRightPressed = false;
+carouselUpPressed = false;
+carouselDownPressed = false;
+
 // Funções auxiliares para gerenciamento de estatísticas
 function damagePlayer(playerName, damage) {
     if (variable_struct_exists(playerStats, playerName)) {

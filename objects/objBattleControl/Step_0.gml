@@ -396,6 +396,120 @@ if(battleBoxActive) {
     }
 }
 
+// Carousel Button System Update (only when battle is active)
+if (battleBoxActive) {
+    // Handle input with improved hold-to-repeat functionality
+    var leftPressed = keyboard_check(vk_left) || keyboard_check(ord("A"));
+    var rightPressed = keyboard_check(vk_right) || keyboard_check(ord("D"));
+    var upPressed = keyboard_check(vk_up) || keyboard_check(ord("W"));
+    var downPressed = keyboard_check(vk_down) || keyboard_check(ord("S"));
+    
+    var anyInputPressed = leftPressed || rightPressed || upPressed || downPressed;
+    var inputChanged = false;
+    
+    // Check for new input presses (allow continuous input for better responsiveness)
+    if (true) {
+        if (leftPressed && !carouselLeftPressed) {
+            carouselTargetIndex = (carouselTargetIndex + 1) % 4; // Fixed: left goes clockwise
+            carouselInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (rightPressed && !carouselRightPressed) {
+            carouselTargetIndex = (carouselTargetIndex - 1 + 4) % 4; // Fixed: right goes counter-clockwise
+            carouselInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (upPressed && !carouselUpPressed) {
+            carouselTargetIndex = (carouselTargetIndex - 1 + 4) % 4;
+            carouselInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (downPressed && !carouselDownPressed) {
+            carouselTargetIndex = (carouselTargetIndex + 1) % 4;
+            carouselInputTimer = 0;
+            inputChanged = true;
+        }
+    }
+    
+    // Handle held input (repeat functionality) - continuous for better responsiveness
+    if (anyInputPressed && !inputChanged) {
+        carouselInputTimer++;
+        
+        if (carouselInputTimer > carouselInputDelay && 
+           (carouselInputTimer - carouselInputDelay) % carouselInputRepeatRate == 0) {
+            
+            // Only one direction at a time to prevent conflicts
+            if (leftPressed) {
+                carouselTargetIndex = (carouselTargetIndex + 1) % 4; // Fixed: left goes clockwise
+            }
+            else if (rightPressed) {
+                carouselTargetIndex = (carouselTargetIndex - 1 + 4) % 4; // Fixed: right goes counter-clockwise
+            }
+            else if (upPressed) {
+                carouselTargetIndex = (carouselTargetIndex - 1 + 4) % 4;
+            }
+            else if (downPressed) {
+                carouselTargetIndex = (carouselTargetIndex + 1) % 4;
+            }
+        }
+    }
+    
+    // Reset input timer when no input is pressed
+    if (!anyInputPressed) {
+        carouselInputTimer = 0;
+    }
+    
+    // Update previous input states
+    carouselLeftPressed = leftPressed;
+    carouselRightPressed = rightPressed;
+    carouselUpPressed = upPressed;
+    carouselDownPressed = downPressed;
+    
+    // Update selected index with smooth interpolation
+    if (abs(carouselSelectedIndex - carouselTargetIndex) > 0.01) {
+        var diff = carouselTargetIndex - carouselSelectedIndex;
+        
+        // Handle wrapping for shortest path
+        if (diff > 2) diff -= 4;
+        if (diff < -2) diff += 4;
+        
+        // Use lerp for smoother movement
+        carouselSelectedIndex += diff * carouselRotationSpeed;
+        
+        // Snap to target when very close to prevent oscillation
+        if (abs(diff) < 0.05) {
+            carouselSelectedIndex = carouselTargetIndex;
+        }
+        
+        // Keep selected index in valid range
+        while (carouselSelectedIndex < 0) carouselSelectedIndex += 4;
+        while (carouselSelectedIndex >= 4) carouselSelectedIndex -= 4;
+    }
+    
+    // Update button positions based on selection
+    var angleOffset = -carouselSelectedIndex * (2 * pi / 4) + (pi / 2); // Rotate to keep selected button at bottom
+    
+    for (var i = 0; i < array_length(carouselButtons); i++) {
+        var button = carouselButtons[i];
+        button.targetAngle = (i / 4) * 2 * pi + angleOffset;
+        
+        // Smooth angle interpolation
+        var angleDiff = button.targetAngle - button.currentAngle;
+        
+        // Handle angle wrapping for shortest path
+        while (angleDiff > pi) angleDiff -= 2 * pi;
+        while (angleDiff < -pi) angleDiff += 2 * pi;
+        
+        button.currentAngle += angleDiff * carouselRotationSpeed;
+        
+        // Calculate elliptical position
+        button.x = carouselCenterX + cos(button.currentAngle) * carouselRadiusX;
+        button.y = carouselCenterY + sin(button.currentAngle) * carouselRadiusY;
+        
+        carouselButtons[i] = button;
+    }
+}
+
 barAnimTimer++;
 
 var topLerpAmount = topBarLerpSpeed + sin(barAnimTimer * 0.3) * 0.05;

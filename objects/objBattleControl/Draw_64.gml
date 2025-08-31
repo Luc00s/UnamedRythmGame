@@ -144,3 +144,45 @@ if(battleBoxActive) {
         }
     }
 }
+
+// Draw Carousel Button System (only when battle is active)
+if (battleBoxActive) {
+    // Create a copy of buttons array for depth sorting
+    var buttonsToDraw = [];
+    for (var i = 0; i < array_length(carouselButtons); i++) {
+        var button = carouselButtons[i];
+        
+        // Determine if this button is selected (closest to the selected index)
+        var indexDiff = abs(button.index - round(carouselSelectedIndex));
+        if (indexDiff > 2) indexDiff = 4 - indexDiff; // Handle wrapping
+        var isSelected = (indexDiff < 0.5);
+        
+        // Create button struct with drawing info for sorting
+        var drawButton = {
+            button: button,
+            isSelected: isSelected,
+            y: button.y
+        };
+        array_push(buttonsToDraw, drawButton);
+    }
+    
+    // Sort buttons by Y position (back to front: higher Y values first, lower Y values last)
+    // This ensures front buttons (lower Y) are drawn on top of back buttons (higher Y)
+    array_sort(buttonsToDraw, function(a, b) {
+        return b.y - a.y; // Sort descending by Y (back to front)
+    });
+    
+    // Draw buttons in sorted order (back to front)
+    for (var i = 0; i < array_length(buttonsToDraw); i++) {
+        var drawButton = buttonsToDraw[i];
+        var button = drawButton.button;
+        var isSelected = drawButton.isSelected;
+        
+        // Draw the appropriate sprite based on selection
+        if (isSelected) {
+            draw_sprite(SprBattleButtonsSelected, button.index, button.x, button.y);
+        } else {
+            draw_sprite(SprBattleButtons, button.index, button.x, button.y);
+        }
+    }
+}

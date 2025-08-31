@@ -183,9 +183,9 @@
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
     {"roomId":{"name":"rmInit","path":"rooms/rmInit/rmInit.yy",},},
+    {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
     {"roomId":{"name":"RoomEditor","path":"rooms/RoomEditor/RoomEditor.yy",},},
     {"roomId":{"name":"RoomBattle","path":"rooms/RoomBattle/RoomBattle.yy",},},
-    {"roomId":{"name":"RoomGame","path":"rooms/RoomGame/RoomGame.yy",},},
     {"roomId":{"name":"RoomGame2","path":"rooms/RoomGame2/RoomGame2.yy",},},
   ],
   "templateType":"game",
