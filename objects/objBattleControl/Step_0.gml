@@ -83,6 +83,14 @@ if(keyboard_check_pressed(vk_space)) {
         animationTimer = 0;
         movingUp = true;
         
+        // Start button intro animation
+        for (var b = 0; b < array_length(carouselButtons); b++) {
+            carouselButtons[b].introActive = true;
+            carouselButtons[b].introTimer = 0;
+            carouselButtons[b].currentOffsetY = -50;
+            carouselButtons[b].outroActive = false;
+        }
+        
         // Enemy spawning is now handled by the ObjEnemie that caught the player
         
         topBarTargetY = 0;
@@ -168,6 +176,12 @@ if(keyboard_check_pressed(vk_space)) {
         if (!movingUp && previousRoom != -1) {
             start_transition(previousRoom);
             previousRoom = -1;
+            
+            // Start button outro animation
+            for (var b = 0; b < array_length(carouselButtons); b++) {
+                carouselButtons[b].outroActive = true;
+                carouselButtons[b].introActive = false;
+            }
         }
         
         for(var i = 0; i < array_length(battleBoxes); i++) {
@@ -206,6 +220,12 @@ if(keyboard_check_pressed(vk_escape) && battleBoxActive) {
     battleBoxActive = false;
     battleBoxes = [];
     movingUp = true;
+    
+    // Start button outro animation
+    for (var b = 0; b < array_length(carouselButtons); b++) {
+        carouselButtons[b].outroActive = true;
+        carouselButtons[b].introActive = false;
+    }
     
     // Clear battle enemies when escaping
     clearAllEnemies();
@@ -373,6 +393,12 @@ if(battleBoxActive) {
             movingUp = true;
             battleExitTimer = 0;
             
+            // Start button outro animation
+            for (var b = 0; b < array_length(carouselButtons); b++) {
+                carouselButtons[b].outroActive = true;
+                carouselButtons[b].introActive = false;
+            }
+            
             // Clear battle enemies when exiting
             clearAllEnemies();
             
@@ -493,18 +519,46 @@ if (battleBoxActive) {
         var button = carouselButtons[i];
         button.targetAngle = (i / 4) * 2 * pi + angleOffset;
         
-        // Smooth angle interpolation
+        // Smooth angle interpolation with easing
         var angleDiff = button.targetAngle - button.currentAngle;
         
         // Handle angle wrapping for shortest path
         while (angleDiff > pi) angleDiff -= 2 * pi;
         while (angleDiff < -pi) angleDiff += 2 * pi;
         
-        button.currentAngle += angleDiff * carouselRotationSpeed;
+        // Apply smooth easing animation
+        button.currentAngle += angleDiff * carouselAnimationEase;
         
         // Calculate elliptical position
         button.x = carouselCenterX + cos(button.currentAngle) * carouselRadiusX;
-        button.y = carouselCenterY + sin(button.currentAngle) * carouselRadiusY;
+        button.targetY = carouselCenterY + sin(button.currentAngle) * carouselRadiusY;
+        
+        // Handle intro animation
+        if (button.introActive) {
+            button.introTimer++;
+            if (button.introTimer >= button.introDelay) {
+                // Spring animation from above screen
+                var yDiff = button.targetY - (button.targetY + button.currentOffsetY);
+                button.currentOffsetY += yDiff * 0.15;
+                
+                // Stop intro when close enough
+                if (abs(button.currentOffsetY) < 0.5) {
+                    button.currentOffsetY = 0;
+                    button.introActive = false;
+                }
+            }
+        }
+        
+        // Handle outro animation
+        if (button.outroActive) {
+            // Spring animation to above screen
+            var targetOffsetY = -60; // Target position above screen
+            var yDiff = targetOffsetY - button.currentOffsetY;
+            button.currentOffsetY += yDiff * 0.2;
+        }
+        
+        // Apply Y offset to final position
+        button.y = button.targetY + button.currentOffsetY;
         
         carouselButtons[i] = button;
     }

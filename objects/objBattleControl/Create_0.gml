@@ -345,7 +345,10 @@ carouselCenterX = 12 + 22 + 6; // 12px padding + 22px horizontal radius + 6px ri
 carouselCenterY = 6 + 10 + 6;  // 6px padding + 10px vertical radius + 6px down adjustment
 carouselRadiusX = 22;      // Horizontal radius (+6px)
 carouselRadiusY = 8;       // Vertical radius
-carouselRotationSpeed = 0.15; // Smooth rotation interpolation speed
+carouselRotationSpeed = 0.12; // Smooth rotation interpolation speed
+
+// Animation properties
+carouselAnimationEase = 0.18;  // Easing factor for smooth movement
 
 // Initialize carousel buttons (4 buttons matching sprite frames)
 for (var i = 0; i < 4; i++) {
@@ -354,7 +357,15 @@ for (var i = 0; i < 4; i++) {
         currentAngle: (i / 4) * 2 * pi, // Evenly spaced around ellipse
         targetAngle: (i / 4) * 2 * pi,
         x: 0,
-        y: 0
+        y: 0,
+        // Intro/Outro animation properties
+        introY: -50, // Start position (above screen)
+        targetY: 0,  // Target position (will be calculated)
+        currentOffsetY: -50, // Current Y offset from target
+        introDelay: i * 8, // Staggered intro timing
+        introTimer: 0,
+        introActive: false,
+        outroActive: false
     };
     array_push(carouselButtons, button);
 }
@@ -367,6 +378,11 @@ carouselLeftPressed = false;
 carouselRightPressed = false;
 carouselUpPressed = false;
 carouselDownPressed = false;
+
+// Button animation states
+carouselIntroActive = false;
+carouselOutroActive = false;
+carouselAnimationTimer = 0;
 
 // Funções auxiliares para gerenciamento de estatísticas
 function damagePlayer(playerName, damage) {

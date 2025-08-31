@@ -166,13 +166,13 @@ if (battleBoxActive) {
         array_push(buttonsToDraw, drawButton);
     }
     
-    // Sort buttons by Y position (back to front: higher Y values first, lower Y values last)
-    // This ensures front buttons (lower Y) are drawn on top of back buttons (higher Y)
+    // Sort buttons by Y position (bottom to top: higher Y values first, lower Y values last)
+    // This ensures selected buttons (usually at bottom) are drawn on top
     array_sort(buttonsToDraw, function(a, b) {
-        return b.y - a.y; // Sort descending by Y (back to front)
+        return a.y - b.y; // Sort ascending by Y (bottom to top)
     });
     
-    // Draw buttons in sorted order (back to front)
+    // Draw buttons in sorted order (bottom to top)
     for (var i = 0; i < array_length(buttonsToDraw); i++) {
         var drawButton = buttonsToDraw[i];
         var button = drawButton.button;
