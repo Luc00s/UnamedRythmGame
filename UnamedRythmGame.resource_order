@@ -99,6 +99,7 @@
     {"name":"Sprite51","order":9,"path":"sprites/Sprite51/Sprite51.yy",},
     {"name":"SprLane","order":10,"path":"sprites/SprLane/SprLane.yy",},
     {"name":"SprNote_1","order":3,"path":"sprites/SprNote_1/SprNote_1.yy",},
+    {"name":"SprNoteEmpty","order":11,"path":"sprites/SprNoteEmpty/SprNoteEmpty.yy",},
     {"name":"SprNoteHold","order":1,"path":"sprites/SprNoteHold/SprNoteHold.yy",},
     {"name":"SprNumbers","order":4,"path":"sprites/SprNumbers/SprNumbers.yy",},
     {"name":"sprPlayerJumpToFight","order":11,"path":"sprites/sprPlayerJumpToFight/sprPlayerJumpToFight.yy",},

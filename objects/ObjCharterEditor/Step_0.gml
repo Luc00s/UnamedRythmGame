@@ -2346,12 +2346,11 @@ else if (_note.type == 6 && editor_view == EEditorView.EFFECTS) {
         
 
         for (var i = 0; i < array_length(lanes); i++) {
-            if (keyboard_check(lanes[i].key)) {
+            lanes[i].is_pressed = keyboard_check(lanes[i].key);
+            if (lanes[i].is_pressed) {
                 lanes[i].highlight_alpha = 1;
-                lanes[i].receptor_scale = 1.2;
             } else {
                 lanes[i].highlight_alpha = max(0, lanes[i].highlight_alpha - 0.1);
-                lanes[i].receptor_scale = lerp(lanes[i].receptor_scale, 1, 0.2);
             }
         }
         

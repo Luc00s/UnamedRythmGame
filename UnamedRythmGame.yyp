@@ -144,6 +144,7 @@
     {"id":{"name":"SprLane","path":"sprites/SprLane/SprLane.yy",},},
     {"id":{"name":"SprNote_1","path":"sprites/SprNote_1/SprNote_1.yy",},},
     {"id":{"name":"SprNote","path":"sprites/SprNote/SprNote.yy",},},
+    {"id":{"name":"SprNoteEmpty","path":"sprites/SprNoteEmpty/SprNoteEmpty.yy",},},
     {"id":{"name":"SprNoteHold","path":"sprites/SprNoteHold/SprNoteHold.yy",},},
     {"id":{"name":"SprNumbers","path":"sprites/SprNumbers/SprNumbers.yy",},},
     {"id":{"name":"sprPlayerDown","path":"sprites/sprPlayerDown/sprPlayerDown.yy",},},

@@ -35,13 +35,11 @@ switch (editor_mode) {
                 var _lane_x1 = _lane.current_x - (_lane_width / 2);
                 var _lane_x2 = _lane.current_x + (_lane_width / 2);
                 var _lane_bg_color = (i % 2 == 0) ? _c_lane_dark : _c_lane_light;
-                draw_set_color(_lane_bg_color);
-                draw_rectangle(_lane_x1, 0, _lane_x2, room_height, false);
+                var _xscale = _lane_width / sprite_get_width(SprLane);
+                var _yscale = room_height / sprite_get_height(SprLane);
+                draw_sprite_ext(SprLane, 0, _lane.current_x, room_height / 2, _xscale, _yscale, 0, _lane_bg_color, 1);
                 if (_lane.highlight_alpha > 0) {
-                    draw_set_alpha(_lane.highlight_alpha * 0.3);
-                    draw_set_color(c_white);
-                    draw_rectangle(_lane_x1, 0, _lane_x2, room_height, false);
-                    draw_set_alpha(1);
+                    draw_sprite_ext(SprLane, 0, _lane.current_x, room_height / 2, _xscale, _yscale, 0, c_white, _lane.highlight_alpha * 0.3);
                 }
             }
             var _lanes_start_x = lanes[0].current_x - (_lane_width / 2);
@@ -137,7 +135,7 @@ if (_note.type == 6) _note_color = UI_COLOR_RESET;
                 if (variable_struct_exists(_note, "uid") && _note.uid == linking_note_from_uid) _note_color = c_lime;
             
                 if (_note.type == 0 || _note.type == 2 || _note.type == 3) {
-                    var _draw_scale = (i == hovered_note_index || array_contains(selected_notes, i)) ? 1.2 : 1.0;
+                    var _draw_scale = 1.0;
                     if (_start_y > -20 && _start_y < room_height + 20) {
                         draw_sprite_ext(SprNote, _lane_data.sprite_index, _draw_x, _start_y, _draw_scale, _draw_scale, 0, _note_color, 1);
                     }
@@ -148,7 +146,7 @@ if (_note.type == 6) _note_color = UI_COLOR_RESET;
                         var _is_hovered = (i == hovered_note_index);
                         var _is_selected = array_contains(selected_notes, i);
                         var _is_dragged = (i == dragged_note_index);
-                        var _head_scale = (_is_hovered && hovered_part == "head") || (_is_dragged && dragged_part == "head") || _is_selected ? 1.2 : 1.0;
+                        var _head_scale = 1.0;
                         var _body_color = _note_color;
                         var _head_color = _note_color;
                         if (_is_dragged && dragged_part == "head") _head_color = _c_highlight;
@@ -186,8 +184,9 @@ if (_note.type == 6) _note_color = UI_COLOR_RESET;
                 var _lane_x2 = _lane.current_x + (_lane_width / 2);
                 
                 var _lane_bg_color = (i % 2 == 0) ? make_color_rgb(30, 25, 25) : make_color_rgb(38, 32, 32);
-                draw_set_color(_lane_bg_color);
-                draw_rectangle(_lane_x1, 0, _lane_x2, room_height, false);
+                var _xscale = _lane_width / sprite_get_width(SprLane);
+                var _yscale = room_height / sprite_get_height(SprLane);
+                draw_sprite_ext(SprLane, 0, _lane.current_x, room_height / 2, _xscale, _yscale, 0, _lane_bg_color, 1);
             }
 
             
@@ -1422,8 +1421,8 @@ if (note_placement_type == ENotePlacementType.RESET) _note_type_str = "RESET";
         
     case EEditorMode.TEST:
         var _c_background_test = make_color_rgb(18, 18, 22);
-        var _c_lane_dark_test = make_color_rgb(25, 25, 30);
-        var _c_lane_light_test = make_color_rgb(32, 32, 38);
+        var _c_lane_dark_test = c_white;
+        var _c_lane_light_test = c_white;
         var _c_repel_test = make_color_rgb(138, 43, 226);
         var _c_move_test = c_orange;
         var _playhead_y_test = get_playhead_y();
@@ -1442,8 +1441,9 @@ if (note_placement_type == ENotePlacementType.RESET) _note_type_str = "RESET";
             draw_clear_alpha(c_black, 0);
 
             var _lane_bg_color = (i % 2 == 0) ? _c_lane_dark_test : _c_lane_light_test;
-            draw_set_color(_lane_bg_color);
-            draw_rectangle(32, 0, 64, room_height, false); 
+            var _xscale = 1.75;
+            var _yscale = room_height / sprite_get_height(SprLane);
+            draw_sprite_ext(SprLane, 0, 48, room_height / 2, _xscale, _yscale, 0, _lane_bg_color, 1);
 
             var _time_at_top = current_chart_position - ((_playhead_y_test - _lane.current_y) / pixels_per_second);
             var _time_at_bottom = current_chart_position - ((_playhead_y_test - room_height - _lane.current_y) / pixels_per_second);
@@ -1458,13 +1458,14 @@ if (note_placement_type == ENotePlacementType.RESET) _note_type_str = "RESET";
                 
                 if (b == floor(b)) { draw_set_color(make_color_rgb(60, 60, 60)); }
                 else { draw_set_color(make_color_rgb(45, 45, 45)); }
-                draw_line(32, _draw_y, 64, _draw_y); 
+                var _w = sprite_get_width(SprLane) * 1.75;
+                draw_line(48 - _w/2, _draw_y, 48 + _w/2, _draw_y); 
             }
 
-            var _receptor_scale = _lane.receptor_scale;
-            draw_sprite_ext(SprNote, _lane.sprite_index, 48, _playhead_y_test, _receptor_scale, _receptor_scale, 0, c_white, 0.25); 
+            var _receptor_sprite = _lane.is_pressed ? SprNote : SprNoteEmpty;
+            draw_sprite_ext(_receptor_sprite, _lane.sprite_index, 48, _playhead_y_test, 1, 1, 0, c_white, 0.25); 
             if (_lane.highlight_alpha > 0) {
-                draw_sprite_ext(SprNote, _lane.sprite_index, 48, _playhead_y_test, _receptor_scale, _receptor_scale, 0, c_white, _lane.highlight_alpha);
+                draw_sprite_ext(_receptor_sprite, _lane.sprite_index, 48, _playhead_y_test, 1, 1, 0, c_white, _lane.highlight_alpha);
             }
 
             var _notes_array_test = chart_data.notes;
