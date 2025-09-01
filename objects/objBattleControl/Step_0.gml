@@ -83,13 +83,20 @@ if(keyboard_check_pressed(vk_space)) {
         animationTimer = 0;
         movingUp = true;
         
-        // Start button intro animation
+        // Start button intro animation and reset battle GUI state
         for (var b = 0; b < array_length(carouselButtons); b++) {
             carouselButtons[b].introActive = true;
             carouselButtons[b].introTimer = 0;
             carouselButtons[b].currentOffsetY = -50;
             carouselButtons[b].outroActive = false;
         }
+        
+        // Reset battle GUI state
+        battleGUIState = "buttons";
+        showButtonGUI = true;
+        allowButtonInput = true;
+        enemySelectionArrowVisible = false;
+        selectedEnemyIndex = 0;
         
         // Enemy spawning is now handled by the ObjEnemie that caught the player
         
@@ -422,8 +429,87 @@ if(battleBoxActive) {
     }
 }
 
-// Carousel Button System Update (only when battle is active)
+// Battle GUI Input System (only when battle is active)
 if (battleBoxActive) {
+    // Update animation state
+    buttonsAnimating = areButtonsAnimating();
+    
+    // Handle fight option selection (Z key on first button - index 0)
+    if (battleGUIState == "buttons" && allowButtonInput && showButtonGUI && !buttonsAnimating) {
+        if (keyboard_check_pressed(ord("Z")) && round(carouselSelectedIndex) == 0 && 
+            (current_time - lastModeSwitch) > modeSwitchDelay) {
+            // Fight option selected - start button outro animation
+            allowButtonInput = false;
+            // Keep showButtonGUI = true so buttons stay visible during outro animation
+            
+            // Start button outro animation
+            for (var b = 0; b < array_length(carouselButtons); b++) {
+                carouselButtons[b].outroActive = true;
+                carouselButtons[b].introActive = false;
+            }
+            
+            lastModeSwitch = current_time;
+        }
+    }
+    
+    // Check if outro animation is complete to switch to enemy selection
+    if (battleGUIState == "buttons" && !allowButtonInput && !buttonsAnimating) {
+        battleGUIState = "enemy_selection";
+        
+        // Restore last selected enemy (or use first if invalid)
+        var sortedEnemies = getEnemiesSortedByX();
+        var enemyCount = array_length(sortedEnemies);
+        
+        if (enemyCount > 0) {
+            // Use last selected enemy if valid, otherwise use first
+            selectedEnemyIndex = (lastSelectedEnemyIndex < enemyCount) ? lastSelectedEnemyIndex : 0;
+            
+            var selectedEnemyData = sortedEnemies[selectedEnemyIndex];
+            arrowTargetX = selectedEnemyData.x;
+            arrowTargetY = selectedEnemyData.y - 30;
+            
+            // Start arrow intro animation (start above enemy position with low alpha)
+            arrowCurrentX = selectedEnemyData.x;
+            arrowCurrentY = selectedEnemyData.y - 60; // Start above enemy
+            arrowCurrentAlpha = 0.25; // Start semi-transparent
+            arrowTargetAlpha = 1; // Fade to full opacity
+        }
+        
+        // Show arrow and hide buttons only after outro animation completes
+        enemySelectionArrowVisible = true;
+        showButtonGUI = false;
+    }
+    
+    // Handle return to button selection (X key)
+    if (battleGUIState == "enemy_selection" && !showButtonGUI) {
+        if (keyboard_check_pressed(ord("X")) && (current_time - lastModeSwitch) > modeSwitchDelay) {
+            // Return to button selection mode - start button intro animation
+            battleGUIState = "buttons";
+            enemySelectionArrowVisible = false;
+            
+            // Start button intro animation
+            for (var b = 0; b < array_length(carouselButtons); b++) {
+                carouselButtons[b].introActive = true;
+                carouselButtons[b].introTimer = 0;
+                carouselButtons[b].currentOffsetY = -50;
+                carouselButtons[b].outroActive = false;
+            }
+            
+            // Show buttons but don't allow input until animation completes
+            showButtonGUI = true;
+            allowButtonInput = false; // Will be enabled when animation completes
+            lastModeSwitch = current_time;
+        }
+    }
+    
+    // Check if intro animation is complete to allow button input
+    if (battleGUIState == "buttons" && !allowButtonInput && showButtonGUI && !buttonsAnimating) {
+        allowButtonInput = true;
+    }
+}
+
+// Carousel Button System Update (only when battle is active and in button mode)
+if (battleBoxActive && battleGUIState == "buttons" && allowButtonInput) {
     // Handle input with improved hold-to-repeat functionality
     var leftPressed = keyboard_check(vk_left) || keyboard_check(ord("A"));
     var rightPressed = keyboard_check(vk_right) || keyboard_check(ord("D"));
@@ -561,6 +647,105 @@ if (battleBoxActive) {
         button.y = button.targetY + button.currentOffsetY;
         
         carouselButtons[i] = button;
+    }
+}
+
+// Enemy Selection System Update (only when in enemy selection mode)
+if (battleBoxActive && battleGUIState == "enemy_selection") {
+    var sortedEnemies = getEnemiesSortedByX();
+    var enemyCount = array_length(sortedEnemies);
+    
+    if (enemyCount > 0) {
+        // Clamp selected enemy index to valid range (in case enemies were removed)
+        selectedEnemyIndex = clamp(selectedEnemyIndex, 0, enemyCount - 1);
+        
+        // Handle input with hold-to-repeat functionality
+        var leftPressed = keyboard_check(vk_left) || keyboard_check(ord("A"));
+        var rightPressed = keyboard_check(vk_right) || keyboard_check(ord("D"));
+        var upPressed = keyboard_check(vk_up) || keyboard_check(ord("W"));
+        var downPressed = keyboard_check(vk_down) || keyboard_check(ord("S"));
+        
+        var anyInputPressed = leftPressed || rightPressed || upPressed || downPressed;
+        var inputChanged = false;
+        
+        // Check for new input presses
+        if (leftPressed && !enemyLeftPressed) {
+            selectedEnemyIndex = (selectedEnemyIndex - 1 + enemyCount) % enemyCount;
+            lastSelectedEnemyIndex = selectedEnemyIndex;
+            enemyInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (rightPressed && !enemyRightPressed) {
+            selectedEnemyIndex = (selectedEnemyIndex + 1) % enemyCount;
+            lastSelectedEnemyIndex = selectedEnemyIndex;
+            enemyInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (upPressed && !enemyUpPressed) {
+            selectedEnemyIndex = (selectedEnemyIndex - 1 + enemyCount) % enemyCount;
+            lastSelectedEnemyIndex = selectedEnemyIndex;
+            enemyInputTimer = 0;
+            inputChanged = true;
+        }
+        else if (downPressed && !enemyDownPressed) {
+            selectedEnemyIndex = (selectedEnemyIndex + 1) % enemyCount;
+            lastSelectedEnemyIndex = selectedEnemyIndex;
+            enemyInputTimer = 0;
+            inputChanged = true;
+        }
+        
+        // Handle held input (repeat functionality)
+        if (anyInputPressed && !inputChanged) {
+            enemyInputTimer++;
+            
+            if (enemyInputTimer > enemyInputDelay && 
+               (enemyInputTimer - enemyInputDelay) % enemyInputRepeatRate == 0) {
+                
+                // Only one direction at a time to prevent conflicts
+                if (leftPressed) {
+                    selectedEnemyIndex = (selectedEnemyIndex - 1 + enemyCount) % enemyCount;
+                    lastSelectedEnemyIndex = selectedEnemyIndex;
+                }
+                else if (rightPressed) {
+                    selectedEnemyIndex = (selectedEnemyIndex + 1) % enemyCount;
+                    lastSelectedEnemyIndex = selectedEnemyIndex;
+                }
+                else if (upPressed) {
+                    selectedEnemyIndex = (selectedEnemyIndex - 1 + enemyCount) % enemyCount;
+                    lastSelectedEnemyIndex = selectedEnemyIndex;
+                }
+                else if (downPressed) {
+                    selectedEnemyIndex = (selectedEnemyIndex + 1) % enemyCount;
+                    lastSelectedEnemyIndex = selectedEnemyIndex;
+                }
+            }
+        }
+        
+        // Reset input timer when no input is pressed
+        if (!anyInputPressed) {
+            enemyInputTimer = 0;
+        }
+        
+        // Update previous input states
+        enemyLeftPressed = leftPressed;
+        enemyRightPressed = rightPressed;
+        enemyUpPressed = upPressed;
+        enemyDownPressed = downPressed;
+        
+        // Update arrow target position based on selected enemy
+        if (selectedEnemyIndex < enemyCount) {
+            var selectedEnemyData = sortedEnemies[selectedEnemyIndex];
+            arrowTargetX = selectedEnemyData.x;
+            arrowTargetY = selectedEnemyData.y - 30;
+        }
+        
+        // Simple linear interpolation for arrow movement and alpha
+        arrowCurrentX = lerp(arrowCurrentX, arrowTargetX, arrowLerpSpeed);
+        arrowCurrentY = lerp(arrowCurrentY, arrowTargetY, arrowLerpSpeed);
+        arrowCurrentAlpha = lerp(arrowCurrentAlpha, arrowTargetAlpha, arrowAlphaLerpSpeed);
+    } else {
+        // No enemies available, hide arrow
+        enemySelectionArrowVisible = false;
     }
 }
 

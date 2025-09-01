@@ -534,13 +534,20 @@ if (hasCaughtPlayer) {
                     animationTimer = 0;
                     movingUp = true;
                     
-                    // Start button intro animation
+                    // Start button intro animation and reset battle GUI state
                     for (var b = 0; b < array_length(carouselButtons); b++) {
                         carouselButtons[b].introActive = true;
                         carouselButtons[b].introTimer = 0;
                         carouselButtons[b].currentOffsetY = -50;
                         carouselButtons[b].outroActive = false;
                     }
+                    
+                    // Reset battle GUI state
+                    battleGUIState = "buttons";
+                    showButtonGUI = true;
+                    allowButtonInput = true;
+                    enemySelectionArrowVisible = false;
+                    selectedEnemyIndex = 0;
                     
                     topBarTargetY = 0;
                     bottomBarTargetY = room_height + 48;

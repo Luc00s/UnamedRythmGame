@@ -145,8 +145,24 @@ if(battleBoxActive) {
     }
 }
 
-// Draw Carousel Button System (only when battle is active)
+// Draw Carousel Button System (only when battle is active and buttons should be shown)
 if (battleBoxActive) {
+    // Check if any button is still animating
+    var buttonsStillAnimating = false;
+    for (var i = 0; i < array_length(carouselButtons); i++) {
+        if (carouselButtons[i].introActive || carouselButtons[i].outroActive) {
+            if (abs(carouselButtons[i].currentOffsetY) > 1) {
+                buttonsStillAnimating = true;
+                break;
+            }
+        }
+    }
+    
+    // Show buttons if in button mode OR if they're still animating (including outro)
+    // Also show if we're in transition from buttons to enemy selection
+    var shouldShowButtons = showButtonGUI || buttonsStillAnimating || 
+                           (battleGUIState == "buttons" && !allowButtonInput);
+    if (shouldShowButtons) {
     // Create a copy of buttons array for depth sorting
     var buttonsToDraw = [];
     for (var i = 0; i < array_length(carouselButtons); i++) {
@@ -185,4 +201,6 @@ if (battleBoxActive) {
             draw_sprite(SprBattleButtons, button.index, button.x, button.y);
         }
     }
+    }
 }
+

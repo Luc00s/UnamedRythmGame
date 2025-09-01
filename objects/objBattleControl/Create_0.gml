@@ -384,6 +384,76 @@ carouselIntroActive = false;
 carouselOutroActive = false;
 carouselAnimationTimer = 0;
 
+// Battle GUI states
+battleGUIState = "buttons"; // "buttons" or "enemy_selection"
+showButtonGUI = true;
+allowButtonInput = true;
+
+// Enemy selection system
+selectedEnemyIndex = 0;
+lastSelectedEnemyIndex = 0; // Remember last selected enemy
+enemySelectionArrowVisible = false;
+
+// Arrow animation properties (simple interpolation)
+arrowCurrentX = 0;
+arrowCurrentY = 0;
+arrowTargetX = 0;
+arrowTargetY = 0;
+arrowLerpSpeed = 0.2; // Simple lerp speed
+
+// Arrow intro animation
+arrowCurrentAlpha = 0;
+arrowTargetAlpha = 1;
+arrowAlphaLerpSpeed = 0.15;
+
+// Enemy selection input timing
+enemyInputTimer = 0;
+enemyInputDelay = 12;     // Initial delay before repeating
+enemyInputRepeatRate = 4; // Frames between repeats when holding
+enemyLeftPressed = false;
+enemyRightPressed = false;
+enemyUpPressed = false;
+enemyDownPressed = false;
+
+// Mode switch prevention and animation state
+lastModeSwitch = 0;
+modeSwitchDelay = 8; // Minimum frames between mode switches
+buttonsAnimating = false; // Track if buttons are currently animating
+
+// Function to get enemies sorted by X position (left to right)
+function getEnemiesSortedByX() {
+    var enemies = [];
+    
+    with (objBattleEnemy) {
+        array_push(enemies, {
+            instance: id,
+            x: x,
+            y: y,
+            sprite_height: sprite_get_height(sprite_index)
+        });
+    }
+    
+    // Sort by X position (left to right)
+    array_sort(enemies, function(a, b) {
+        return a.x - b.x;
+    });
+    
+    return enemies;
+}
+
+// Function to check if any button is still animating
+function areButtonsAnimating() {
+    for (var i = 0; i < array_length(carouselButtons); i++) {
+        var button = carouselButtons[i];
+        if (button.introActive || button.outroActive) {
+            if (abs(button.currentOffsetY) > 2) { // Still moving
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 // Funções auxiliares para gerenciamento de estatísticas
 function damagePlayer(playerName, damage) {
     if (variable_struct_exists(playerStats, playerName)) {
