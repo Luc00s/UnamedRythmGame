@@ -345,10 +345,10 @@ carouselCenterX = 12 + 22 + 6; // 12px padding + 22px horizontal radius + 6px ri
 carouselCenterY = 6 + 10 + 6;  // 6px padding + 10px vertical radius + 6px down adjustment
 carouselRadiusX = 22;      // Horizontal radius (+6px)
 carouselRadiusY = 8;       // Vertical radius
-carouselRotationSpeed = 0.12; // Smooth rotation interpolation speed
+carouselRotationSpeed = 0.35; // Fast rotation interpolation speed
 
 // Animation properties
-carouselAnimationEase = 0.18;  // Easing factor for smooth movement
+carouselAnimationEase = 0.45;  // Fast easing factor for quick movement
 
 // Initialize carousel buttons (4 buttons matching sprite frames)
 for (var i = 0; i < 4; i++) {
@@ -362,7 +362,7 @@ for (var i = 0; i < 4; i++) {
         introY: -50, // Start position (above screen)
         targetY: 0,  // Target position (will be calculated)
         currentOffsetY: -50, // Current Y offset from target
-        introDelay: i * 8, // Staggered intro timing
+        introDelay: i * 3, // Fast staggered intro timing
         introTimer: 0,
         introActive: false,
         outroActive: false

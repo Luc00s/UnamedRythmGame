@@ -172,6 +172,7 @@
     {"id":{"name":"sprPlayerWalkUp","path":"sprites/sprPlayerWalkUp/sprPlayerWalkUp.yy",},},
     {"id":{"name":"sprPlayerWalkUpLeft","path":"sprites/sprPlayerWalkUpLeft/sprPlayerWalkUpLeft.yy",},},
     {"id":{"name":"sprPlayerWalkUpRight","path":"sprites/sprPlayerWalkUpRight/sprPlayerWalkUpRight.yy",},},
+    {"id":{"name":"SprSelectEnemieArrow","path":"sprites/SprSelectEnemieArrow/SprSelectEnemieArrow.yy",},},
     {"id":{"name":"sprSolid","path":"sprites/sprSolid/sprSolid.yy",},},
     {"id":{"name":"SprTileTest","path":"sprites/SprTileTest/SprTileTest.yy",},},
     {"id":{"name":"sprTransition","path":"sprites/sprTransition/sprTransition.yy",},},

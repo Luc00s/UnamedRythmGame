@@ -534,6 +534,14 @@ if (hasCaughtPlayer) {
                     animationTimer = 0;
                     movingUp = true;
                     
+                    // Start button intro animation
+                    for (var b = 0; b < array_length(carouselButtons); b++) {
+                        carouselButtons[b].introActive = true;
+                        carouselButtons[b].introTimer = 0;
+                        carouselButtons[b].currentOffsetY = -50;
+                        carouselButtons[b].outroActive = false;
+                    }
+                    
                     topBarTargetY = 0;
                     bottomBarTargetY = room_height + 48;
                     barAnimTimer = 0;

@@ -119,6 +119,7 @@
     {"name":"sprPlayerWalkUp","order":1,"path":"sprites/sprPlayerWalkUp/sprPlayerWalkUp.yy",},
     {"name":"sprPlayerWalkUpLeft","order":1,"path":"sprites/sprPlayerWalkUpLeft/sprPlayerWalkUpLeft.yy",},
     {"name":"sprPlayerWalkUpRight","order":2,"path":"sprites/sprPlayerWalkUpRight/sprPlayerWalkUpRight.yy",},
+    {"name":"SprSelectEnemieArrow","order":8,"path":"sprites/SprSelectEnemieArrow/SprSelectEnemieArrow.yy",},
     {"name":"SprTileTest","order":2,"path":"sprites/SprTileTest/SprTileTest.yy",},
     {"name":"sprTransition","order":3,"path":"sprites/sprTransition/sprTransition.yy",},
     {"name":"SprTree","order":5,"path":"sprites/SprTree/SprTree.yy",},

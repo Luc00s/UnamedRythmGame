@@ -537,9 +537,9 @@ if (battleBoxActive) {
         if (button.introActive) {
             button.introTimer++;
             if (button.introTimer >= button.introDelay) {
-                // Spring animation from above screen
+                // Fast spring animation from above screen
                 var yDiff = button.targetY - (button.targetY + button.currentOffsetY);
-                button.currentOffsetY += yDiff * 0.15;
+                button.currentOffsetY += yDiff * 0.4;
                 
                 // Stop intro when close enough
                 if (abs(button.currentOffsetY) < 0.5) {
@@ -551,10 +551,10 @@ if (battleBoxActive) {
         
         // Handle outro animation
         if (button.outroActive) {
-            // Spring animation to above screen
+            // Fast spring animation to above screen
             var targetOffsetY = -60; // Target position above screen
             var yDiff = targetOffsetY - button.currentOffsetY;
-            button.currentOffsetY += yDiff * 0.2;
+            button.currentOffsetY += yDiff * 0.5;
         }
         
         // Apply Y offset to final position
