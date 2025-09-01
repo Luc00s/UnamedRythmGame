@@ -29,10 +29,7 @@ global.data = {
 
 //Ajustando a tela
 var _screen = global.data.screen
-window_set_size(_screen.width*_screen.size, _screen.height*_screen.size);
 display_reset(0, true);
-surface_resize(application_surface, global.data.screen.width, global.data.screen.height);
-display_set_gui_size(global.data.screen.width, global.data.screen.height);
 
 //Ajustando o cursor
 //window_set_cursor(cr_none);
